@@ -2,11 +2,10 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@src/components/ui/card";
 import { Button } from "@src/components/ui/button";
 import { ChevronDown, ChevronUp, Pencil, FileText } from "lucide-react";
-import { Note } from "@shared/schema";
+import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
 import { Badge } from "@src/components/ui/badge";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 import { Input } from "@src/components/ui/input";
-import DynamicFieldEditor from "@src/components/dynamic-field-editor";
 
 interface DailyTreatmentNoteProps {
   notes: Note[];
@@ -18,7 +17,7 @@ interface DailyTreatmentNoteProps {
 
 export default function DailyTreatmentNote({ notes, isEditMode, onEdit, onToggleEditMode, onViewNote }: DailyTreatmentNoteProps) {
   const [showAllTreatments, setShowAllTreatments] = useState(false);
-  
+
   // If no notes, show empty state
   if (!notes || notes.length === 0) {
     return (
@@ -31,7 +30,7 @@ export default function DailyTreatmentNote({ notes, isEditMode, onEdit, onToggle
   }
 
   // Sort notes by creation date (newest first)
-  const sortedNotes = [...notes].sort((a, b) => 
+  const sortedNotes = [...notes].sort((a, b) =>
     new Date(b.creation).getTime() - new Date(a.creation).getTime()
   );
 
@@ -50,16 +49,16 @@ export default function DailyTreatmentNote({ notes, isEditMode, onEdit, onToggle
         </div>
         <div className="flex gap-2">
           {onViewNote && sortedNotes.length > 0 && (
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="sm"
               onClick={() => onViewNote(sortedNotes[0])}
             >
               <FileText className="h-4 w-4 mr-1.5" /> View Original
             </Button>
           )}
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="sm"
             onClick={onToggleEditMode}
           >
@@ -67,12 +66,12 @@ export default function DailyTreatmentNote({ notes, isEditMode, onEdit, onToggle
           </Button>
         </div>
       </CardHeader>
-      
+
       <CardContent className="p-4">
         {/* Treatment Timeline */}
         <div className="relative pb-6">
           <div className="absolute left-4 h-full w-0.5 bg-slate-200"></div>
-          
+
           {visibleNotes.map((note, index) => {
             const noteData = note.noteAbstraction;
             const treatmentDetails = noteData.treatment_details?.[0];
@@ -80,11 +79,11 @@ export default function DailyTreatmentNote({ notes, isEditMode, onEdit, onToggle
             const formattedDate = creationDate ? format(creationDate, 'MMM d, yyyy') : 'Unknown date';
             const treatmentNumber = parseInt(treatmentDetails?.treatment_number || '0');
             const isLastTreatment = index === 0 && treatmentNumber === sortedNotes.length;
-            
+
             return (
-              <div 
-                key={note.id} 
-                className="relative pl-10 mb-8" 
+              <div
+                key={note.id}
+                className="relative pl-10 mb-8"
                 data-note-id={note.id}
               >
                 <div className={`absolute left-0 w-8 h-8 ${index === 0 ? 'bg-primary' : 'bg-slate-300'} rounded-full flex items-center justify-center text-white font-medium z-10`}>
@@ -98,8 +97,8 @@ export default function DailyTreatmentNote({ notes, isEditMode, onEdit, onToggle
                     </div>
                     <div className="flex items-center space-x-2">
                       {onViewNote && (
-                        <Button 
-                          variant="ghost" 
+                        <Button
+                          variant="ghost"
                           size="sm"
                           onClick={() => onViewNote(note)}
                           className="text-xs"
@@ -199,11 +198,11 @@ export default function DailyTreatmentNote({ notes, isEditMode, onEdit, onToggle
               </div>
             );
           })}
-          
+
           {/* Show/Hide More Button */}
           {hasMoreNotes && (
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               className="mt-2 ml-10 text-sm text-primary hover:text-primary/90 hover:bg-primary/10"
               onClick={() => setShowAllTreatments(!showAllTreatments)}
             >

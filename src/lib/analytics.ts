@@ -1,4 +1,4 @@
-import { Note } from "@shared/schema";
+import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
 
 export interface ComorbidityProfile {
   patientId: string;
@@ -63,7 +63,7 @@ export interface CohortFilters {
 
 export class ComorbidityAnalyzer {
   private notes: Note[];
-  
+
   constructor(notes: Note[]) {
     this.notes = notes;
   }
@@ -83,7 +83,7 @@ export class ComorbidityAnalyzer {
     const treatmentSummaryNotes = this.notes.filter(
       note => note.patient_id === patientId && note.noteType === 'TREATMENT SUMMARY'
     );
-    
+
     // Initialize arrays for tracking scores across notes
     const ecogScores: { source: string; value: number; date: string }[] = [];
     const kpsScores: { source: string; value: number; date: string }[] = [];
@@ -93,7 +93,7 @@ export class ComorbidityAnalyzer {
     const shimScores: { source: string; value: number; date: string }[] = [];
     const iiefScores: { source: string; value: number; date: string }[] = [];
     let allMedicalConditions: string[] = [];
-    
+
     let age: number | undefined;
     let hypertension = false;
     let copd = false;
@@ -105,40 +105,40 @@ export class ComorbidityAnalyzer {
     consultNotes.forEach(note => {
       const noteData = note.noteAbstraction;
       const noteDate = note.creation || '';
-      
+
       // Demographics
       if (noteData?.demographics?.age) {
         age = noteData.demographics.age;
       }
-      
+
       // Medical history
       const medicalHistory = noteData?.history?.medical_history || [];
       const medicalHistoryArray = Array.isArray(medicalHistory) ? medicalHistory : [String(medicalHistory)];
       allMedicalConditions.push(...medicalHistoryArray.filter(condition => condition && condition.trim() !== ''));
-      
+
       const medicalHistoryStr = medicalHistoryArray.join(' ').toLowerCase();
-      
-      hypertension = hypertension || medicalHistoryStr.includes('hypertension') || 
+
+      hypertension = hypertension || medicalHistoryStr.includes('hypertension') ||
                     medicalHistoryStr.includes('htn') ||
                     medicalHistoryStr.includes('high blood pressure');
-      copd = copd || medicalHistoryStr.includes('copd') || 
+      copd = copd || medicalHistoryStr.includes('copd') ||
             medicalHistoryStr.includes('chronic obstructive') ||
             medicalHistoryStr.includes('emphysema');
-      diabetes = diabetes || medicalHistoryStr.includes('diabetes') || 
+      diabetes = diabetes || medicalHistoryStr.includes('diabetes') ||
                medicalHistoryStr.includes('dm') ||
                medicalHistoryStr.includes('diabetic');
-      cad = cad || medicalHistoryStr.includes('coronary') || 
+      cad = cad || medicalHistoryStr.includes('coronary') ||
            medicalHistoryStr.includes('cad') ||
            medicalHistoryStr.includes('heart disease');
-      
+
       // Smoking status
-      const smokingStatus = typeof noteData?.history?.smoking_status === 'string' 
-        ? noteData.history.smoking_status 
+      const smokingStatus = typeof noteData?.history?.smoking_status === 'string'
+        ? noteData.history.smoking_status
         : '';
-      smokingHistory = smokingHistory || smokingStatus.toLowerCase().includes('former') || 
+      smokingHistory = smokingHistory || smokingStatus.toLowerCase().includes('former') ||
                       smokingStatus.toLowerCase().includes('current') ||
                       smokingStatus.toLowerCase().includes('smoking');
-      
+
       // Assessment scores
       if (noteData?.assessment?.ecog !== undefined) {
         ecogScores.push({ source: 'consult', value: noteData.assessment.ecog, date: noteDate });
@@ -167,7 +167,7 @@ export class ComorbidityAnalyzer {
     weeklyNotes.forEach(note => {
       const noteData = note.noteAbstraction;
       const noteDate = note.creation || '';
-      
+
       if (noteData?.assessment?.ecog !== undefined) {
         ecogScores.push({ source: 'weekly', value: noteData.assessment.ecog, date: noteDate });
       }
@@ -195,7 +195,7 @@ export class ComorbidityAnalyzer {
     followupNotes.forEach(note => {
       const noteData = note.noteAbstraction;
       const noteDate = note.creation || '';
-      
+
       if (noteData?.assessment?.ecog !== undefined) {
         ecogScores.push({ source: 'followup', value: noteData.assessment.ecog, date: noteDate });
       }
@@ -223,7 +223,7 @@ export class ComorbidityAnalyzer {
     treatmentSummaryNotes.forEach(note => {
       const noteData = note.noteAbstraction;
       const noteDate = note.creation || '';
-      
+
       if (noteData?.assessment?.ipss !== undefined) {
         ipssScores.push({ source: 'treatment-summary', value: noteData.assessment.ipss, date: noteDate });
       }
@@ -265,7 +265,7 @@ export class ComorbidityAnalyzer {
   // Extract treatment modality from simulation and treatment notes
   extractTreatmentModality(patientId: string): TreatmentModality {
     const treatmentNotes = this.notes.filter(
-      note => note.patient_id === patientId && 
+      note => note.patient_id === patientId &&
       (note.noteType === 'SIMULATION' || note.noteType === 'TREATMENT SUMMARY')
     );
 
@@ -276,16 +276,16 @@ export class ComorbidityAnalyzer {
 
     for (const note of treatmentNotes) {
       const noteData = note.noteAbstraction;
-      
+
       // Extract treatment type from note description or content
       const description = note.description?.toLowerCase() || '';
-      
+
       // Extract from treatment summary technique and modality fields
       if (noteData?.treatment?.technique) {
         technique = noteData.treatment.technique;
         treatmentType = technique; // Use technique as primary treatment type
       }
-      
+
       if (noteData?.treatment?.modality) {
         const modality = noteData.treatment.modality.toLowerCase();
         if (modality.includes('sbrt') || modality.includes('stereotactic')) {
@@ -302,7 +302,7 @@ export class ComorbidityAnalyzer {
           treatmentType = noteData.treatment.modality;
         }
       }
-      
+
       // Fallback to description parsing if no structured data
       if (treatmentType === 'Unknown') {
         if (description.includes('sbrt') || description.includes('stereotactic')) {
@@ -358,9 +358,9 @@ export class ComorbidityAnalyzer {
     for (const note of dailyNotes) {
       const noteData = note.noteAbstraction;
       const description = note.description?.toLowerCase() || '';
-      
+
       // Look for interruption indicators
-      if (description.includes('interrupt') || description.includes('delay') || 
+      if (description.includes('interrupt') || description.includes('delay') ||
           description.includes('break') || description.includes('hold')) {
         interruptions++;
       }
@@ -384,11 +384,11 @@ export class ComorbidityAnalyzer {
     weeklyNotes.forEach(note => {
       const noteData = note.noteAbstraction;
       const noteDate = note.creation || '';
-      const sideEffects = typeof noteData?.side_effects === 'string' 
-        ? noteData.side_effects.toLowerCase() 
+      const sideEffects = typeof noteData?.side_effects === 'string'
+        ? noteData.side_effects.toLowerCase()
         : '';
       const reviewOfSystems = noteData?.review_of_systems || {};
-      
+
       // Check for fatigue
       if (sideEffects.includes('fatigue') || sideEffects.includes('tired') || sideEffects.includes('exhausted')) {
         let severity = 'mild';
@@ -396,7 +396,7 @@ export class ComorbidityAnalyzer {
         else if (sideEffects.includes('moderate') || sideEffects.includes('grade 2')) severity = 'moderate';
         fatigueReports.push({ source: 'weekly', severity, date: noteDate });
       }
-      
+
       // Check for dermatitis/skin reactions
       if (sideEffects.includes('dermatitis') || sideEffects.includes('skin') || sideEffects.includes('rash')) {
         let severity = 'mild';
@@ -423,10 +423,10 @@ export class ComorbidityAnalyzer {
     followupNotes.forEach(note => {
       const noteData = note.noteAbstraction;
       const noteDate = note.creation || '';
-      const sideEffects = typeof noteData?.side_effects === 'string' 
-        ? noteData.side_effects.toLowerCase() 
+      const sideEffects = typeof noteData?.side_effects === 'string'
+        ? noteData.side_effects.toLowerCase()
         : '';
-      
+
       // Check for fatigue
       if (sideEffects.includes('fatigue') || sideEffects.includes('tired') || sideEffects.includes('exhausted')) {
         let severity = 'mild';
@@ -434,7 +434,7 @@ export class ComorbidityAnalyzer {
         else if (sideEffects.includes('moderate') || sideEffects.includes('grade 2')) severity = 'moderate';
         fatigueReports.push({ source: 'followup', severity, date: noteDate });
       }
-      
+
       // Check for dermatitis/skin reactions
       if (sideEffects.includes('dermatitis') || sideEffects.includes('skin') || sideEffects.includes('rash')) {
         let severity = 'mild';
@@ -471,16 +471,16 @@ export class ComorbidityAnalyzer {
       };
     }
 
-    const latestFollowup = followupNotes.sort((a, b) => 
+    const latestFollowup = followupNotes.sort((a, b) =>
       new Date(b.creation).getTime() - new Date(a.creation).getTime()
     )[0];
 
     const noteData = latestFollowup.noteAbstraction;
-    const diseaseStatus = typeof noteData?.disease_status === 'string' 
-      ? noteData.disease_status.toLowerCase() 
+    const diseaseStatus = typeof noteData?.disease_status === 'string'
+      ? noteData.disease_status.toLowerCase()
       : '';
-    const sideEffects = typeof noteData?.side_effects === 'string' 
-      ? noteData.side_effects.toLowerCase() 
+    const sideEffects = typeof noteData?.side_effects === 'string'
+      ? noteData.side_effects.toLowerCase()
       : '';
 
     // Calculate survival months from treatment to latest follow-up
@@ -488,13 +488,13 @@ export class ComorbidityAnalyzer {
       note => note.patient_id === patientId && note.noteType === 'CONSULT'
     );
     let survivalMonths: number | undefined;
-    
+
     if (treatmentNotes.length > 0) {
-      const firstTreatment = treatmentNotes.sort((a, b) => 
+      const firstTreatment = treatmentNotes.sort((a, b) =>
         new Date(a.creation).getTime() - new Date(b.creation).getTime()
       )[0];
-      
-      const monthsDiff = (new Date(latestFollowup.creation).getTime() - 
+
+      const monthsDiff = (new Date(latestFollowup.creation).getTime() -
                          new Date(firstTreatment.creation).getTime()) / (1000 * 60 * 60 * 24 * 30);
       survivalMonths = Math.round(monthsDiff);
     }
@@ -518,7 +518,7 @@ export class ComorbidityAnalyzer {
     outcomes: OutcomeData;
   }> {
     const patientIds = Array.from(new Set(this.notes.map(note => note.patient_id)));
-    
+
     return patientIds.map(patientId => ({
       patientId,
       comorbidities: this.extractComorbidityProfile(patientId),
@@ -533,7 +533,7 @@ export class ComorbidityAnalyzer {
     return analytics.filter(patient => {
       // Age filter
       if (filters.ageRange && patient.comorbidities.age) {
-        if (patient.comorbidities.age < filters.ageRange.min || 
+        if (patient.comorbidities.age < filters.ageRange.min ||
             patient.comorbidities.age > filters.ageRange.max) {
           return false;
         }
@@ -564,7 +564,7 @@ export class ComorbidityAnalyzer {
       // ECOG filter
       if (filters.ecogRange && patient.comorbidities.ecogScores.length > 0) {
         const latestEcog = patient.comorbidities.ecogScores[patient.comorbidities.ecogScores.length - 1];
-        if (latestEcog.value < filters.ecogRange.min || 
+        if (latestEcog.value < filters.ecogRange.min ||
             latestEcog.value > filters.ecogRange.max) {
           return false;
         }
@@ -577,7 +577,7 @@ export class ComorbidityAnalyzer {
   // Generate insights based on cohort comparison
   generateInsights(analytics: ReturnType<typeof this.generatePatientAnalytics>): string[] {
     const insights: string[] = [];
-    
+
     // Group by treatment type and comorbidities
     const treatmentGroups = analytics.reduce((acc, patient) => {
       const key = `${patient.treatment.treatmentType}_${patient.comorbidities.copd ? 'COPD' : 'NoCOPD'}`;
@@ -589,11 +589,11 @@ export class ComorbidityAnalyzer {
     // Compare SBRT vs IMRT for COPD patients
     const sbrtCopd = treatmentGroups['SBRT_COPD'] || [];
     const imrtCopd = treatmentGroups['IMRT_COPD'] || [];
-    
+
     if (sbrtCopd.length > 0 && imrtCopd.length > 0) {
       const sbrtInterruptions = sbrtCopd.reduce((sum, p) => sum + p.tolerance.interruptions, 0) / sbrtCopd.length;
       const imrtInterruptions = imrtCopd.reduce((sum, p) => sum + p.tolerance.interruptions, 0) / imrtCopd.length;
-      
+
       if (Math.abs(sbrtInterruptions - imrtInterruptions) > 0.5) {
         const better = sbrtInterruptions < imrtInterruptions ? 'SBRT' : 'IMRT';
         const diff = Math.abs(sbrtInterruptions - imrtInterruptions).toFixed(1);
@@ -604,11 +604,11 @@ export class ComorbidityAnalyzer {
     // Diabetes and treatment tolerance
     const diabeticPatients = analytics.filter(p => p.comorbidities.diabetes);
     const nonDiabeticPatients = analytics.filter(p => !p.comorbidities.diabetes);
-    
+
     if (diabeticPatients.length > 0 && nonDiabeticPatients.length > 0) {
       const diabeticGrade3 = diabeticPatients.filter(p => p.outcomes.grade3Toxicity).length / diabeticPatients.length;
       const nonDiabeticGrade3 = nonDiabeticPatients.filter(p => p.outcomes.grade3Toxicity).length / nonDiabeticPatients.length;
-      
+
       if (Math.abs(diabeticGrade3 - nonDiabeticGrade3) > 0.1) {
         const higher = diabeticGrade3 > nonDiabeticGrade3 ? 'diabetic' : 'non-diabetic';
         const diff = (Math.abs(diabeticGrade3 - nonDiabeticGrade3) * 100).toFixed(0);

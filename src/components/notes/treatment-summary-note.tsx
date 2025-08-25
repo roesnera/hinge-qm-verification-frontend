@@ -3,8 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@src/components/ui/car
 import EditableField from "@src/components/editable-field";
 import { Button } from "@src/components/ui/button";
 import { Pencil, FileText } from "lucide-react";
-import { Note } from "@shared/schema";
-import { format, parseISO } from "date-fns";
+import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
+import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@src/components/ui/select";
 import { Badge } from "@src/components/ui/badge";
 import DynamicFieldEditor from "@src/components/dynamic-field-editor";
@@ -30,22 +30,22 @@ export default function TreatmentSummaryNote({ notes, isEditMode, onEdit, onTogg
   }
 
   // Sort notes by creation date (newest first)
-  const sortedNotes = [...notes].sort((a, b) => 
+  const sortedNotes = [...notes].sort((a, b) =>
     new Date(b.creation).getTime() - new Date(a.creation).getTime()
   );
 
   // State to track which note is currently selected
   const [selectedNoteId, setSelectedNoteId] = useState<string>(sortedNotes[0].id);
-  
+
   // Find the currently selected note
   const selectedNote = sortedNotes.find(n => n.id === selectedNoteId) || sortedNotes[0];
   const note = selectedNote;
   const noteData = note.noteAbstraction;
-  
+
   // Format the creation date for display
   const creationDate = note.creation ? new Date(note.creation) : null;
   const formattedDate = creationDate ? format(creationDate, 'MMM d, yyyy') : 'Unknown date';
-  
+
   // Format dates
   const formatDateString = (dateStr: string | null | undefined) => {
     if (!dateStr) return '';
@@ -64,7 +64,7 @@ export default function TreatmentSummaryNote({ notes, isEditMode, onEdit, onTogg
   // Find treatment periods
   const startDate = noteData?.treatment_sites?.[0]?.first_treatment_date || '';
   const endDate = noteData?.treatment_completion_date || '';
-  
+
   // Calculate total sessions
   const totalSessions = noteData?.treatment_sites?.[0]?.treatment_number || '0';
 
@@ -88,16 +88,16 @@ export default function TreatmentSummaryNote({ notes, isEditMode, onEdit, onTogg
         </div>
         <div className="flex gap-2">
           {onViewNote && (
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="sm"
               onClick={() => onViewNote(note)}
             >
               <FileText className="h-4 w-4 mr-1.5" /> View Original
             </Button>
           )}
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="sm"
             onClick={onToggleEditMode}
           >
@@ -105,7 +105,7 @@ export default function TreatmentSummaryNote({ notes, isEditMode, onEdit, onTogg
           </Button>
         </div>
       </CardHeader>
-      
+
       <CardContent className="p-4">
         {sortedNotes.length > 1 && (
           <div className="mb-4">
@@ -113,7 +113,7 @@ export default function TreatmentSummaryNote({ notes, isEditMode, onEdit, onTogg
               <label className="text-sm font-medium">
                 Select note version:
               </label>
-              <Select 
+              <Select
                 value={selectedNoteId}
                 onValueChange={(value: string) => {
                   setSelectedNoteId(value);
@@ -152,23 +152,23 @@ export default function TreatmentSummaryNote({ notes, isEditMode, onEdit, onTogg
             </div>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Treatment Details */}
           <div>
             <div className="bg-slate-50 p-4 rounded-lg mb-4">
               <h3 className="text-sm font-semibold text-slate-500 uppercase mb-3">Diagnosis & Treatment</h3>
               <div className="space-y-3">
-                <EditableField 
+                <EditableField
                   label="Diagnosis"
                   value={noteData?.diagnosis}
                   isEditMode={isEditMode}
                   onEdit={createEditHandler("noteAbstraction.diagnosis")}
                   multiline
                 />
-                
+
                 {noteData?.treatment_sites?.[0] && (
-                  <EditableField 
+                  <EditableField
                     label="Treatment Site"
                     value={noteData.treatment_sites[0].treatment_site_name}
                     isEditMode={isEditMode}
@@ -176,30 +176,30 @@ export default function TreatmentSummaryNote({ notes, isEditMode, onEdit, onTogg
                     isRequired={true}
                   />
                 )}
-                
-                <EditableField 
+
+                <EditableField
                   label="Intent"
                   value={noteData?.intent}
                   isEditMode={isEditMode}
                   onEdit={createEditHandler("noteAbstraction.intent")}
                   isRequired={true}
                 />
-                
-                <EditableField 
+
+                <EditableField
                   label="Technique"
                   value={noteData?.technique}
                   isEditMode={isEditMode}
                   onEdit={createEditHandler("noteAbstraction.technique")}
                 />
-                
-                <EditableField 
+
+                <EditableField
                   label="Modality"
                   value={noteData?.modality}
                   isEditMode={isEditMode}
                   onEdit={createEditHandler("noteAbstraction.modality")}
                 />
-                
-                <EditableField 
+
+                <EditableField
                   label="Concurrent Chemotherapy"
                   value={noteData?.concurrent_chemotherapy}
                   isEditMode={isEditMode}
@@ -213,37 +213,37 @@ export default function TreatmentSummaryNote({ notes, isEditMode, onEdit, onTogg
               <div className="space-y-3">
                 {noteData?.treatment_sites?.[0] && (
                   <>
-                    <EditableField 
+                    <EditableField
                       label="First Treatment Date"
                       value={noteData.treatment_sites[0].first_treatment_date}
                       isEditMode={isEditMode}
                       onEdit={createEditHandler("noteAbstraction.treatment_sites[0].first_treatment_date")}
                       isRequired={true}
                     />
-                    
-                    <EditableField 
+
+                    <EditableField
                       label="Total Treatments"
                       value={noteData.treatment_sites[0].treatment_number}
                       isEditMode={isEditMode}
                       onEdit={createEditHandler("noteAbstraction.treatment_sites[0].treatment_number")}
                       isRequired={true}
                     />
-                    
-                    <EditableField 
+
+                    <EditableField
                       label="Daily Dose (cGy)"
                       value={noteData.treatment_sites[0].daily_dose}
                       isEditMode={isEditMode}
                       onEdit={createEditHandler("noteAbstraction.treatment_sites[0].daily_dose")}
                       isRequired={true}
                     />
-                    
-                    <EditableField 
+
+                    <EditableField
                       label="Cumulative Dose (cGy)"
                       value={noteData.treatment_sites[0].cumulative_dose_received_to_date}
                       isEditMode={isEditMode}
                       onEdit={createEditHandler("noteAbstraction.treatment_sites[0].cumulative_dose_received_to_date")}
                     />
-                    <EditableField 
+                    <EditableField
                       label="Total Dose (cGy)"
                       value={noteData.treatment_sites[0].total_dose}
                       isEditMode={isEditMode}
@@ -252,15 +252,15 @@ export default function TreatmentSummaryNote({ notes, isEditMode, onEdit, onTogg
                     />
                   </>
                 )}
-                
-                <EditableField 
+
+                <EditableField
                   label="Treatment Completion Date"
                   value={noteData?.treatment_completion_date}
                   isEditMode={isEditMode}
                   onEdit={createEditHandler("noteAbstraction.treatment_completion_date")}
                   isRequired={true}
                 />
-                <EditableField 
+                <EditableField
                   label="Pain Management Description"
                   value={noteData?.pain_management_description}
                   isEditMode={isEditMode}
@@ -286,7 +286,7 @@ export default function TreatmentSummaryNote({ notes, isEditMode, onEdit, onTogg
             <div className="bg-slate-50 p-4 rounded-lg">
               <h3 className="text-sm font-semibold text-slate-500 uppercase mb-3">Follow-up Plan</h3>
               <div className="space-y-3">
-                <EditableField 
+                <EditableField
                   label="Follow-up Schedule"
                   value={noteData?.follow_up}
                   isEditMode={isEditMode}

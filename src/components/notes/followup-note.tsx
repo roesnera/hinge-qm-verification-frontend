@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@src/components/ui/car
 import EditableField from "@src/components/editable-field";
 import { Button } from "@src/components/ui/button";
 import { Pencil, FileText } from "lucide-react";
-import { Note } from "@shared/schema";
+import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
 import { format } from "date-fns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@src/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@src/components/ui/select";
@@ -30,13 +30,13 @@ export default function FollowupNote({ notes, isEditMode, onEdit, onToggleEditMo
   }
 
   // Sort notes by creation date (newest first)
-  const sortedNotes = [...notes].sort((a, b) => 
+  const sortedNotes = [...notes].sort((a, b) =>
     new Date(b.creation).getTime() - new Date(a.creation).getTime()
   );
 
   // State to track which note is currently selected
   const [selectedNoteId, setSelectedNoteId] = useState<string>(sortedNotes[0].id);
-  
+
   // Find the currently selected note
   const selectedNote = sortedNotes.find(n => n.id === selectedNoteId) || sortedNotes[0];
   const note = selectedNote;
@@ -71,16 +71,16 @@ export default function FollowupNote({ notes, isEditMode, onEdit, onToggleEditMo
         </div>
         <div className="flex gap-2">
           {onViewNote && (
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="sm"
               onClick={() => onViewNote(note)}
             >
               <FileText className="h-4 w-4 mr-1.5" /> View Original
             </Button>
           )}
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="sm"
             onClick={onToggleEditMode}
           >
@@ -88,7 +88,7 @@ export default function FollowupNote({ notes, isEditMode, onEdit, onToggleEditMo
           </Button>
         </div>
       </CardHeader>
-      
+
       <CardContent className="p-4">
         {sortedNotes.length > 1 && (
           <div className="mb-4">
@@ -96,7 +96,7 @@ export default function FollowupNote({ notes, isEditMode, onEdit, onToggleEditMo
               <label className="text-sm font-medium">
                 Select note version:
               </label>
-              <Select 
+              <Select
                 value={selectedNoteId}
                 onValueChange={(value: string) => {
                   setSelectedNoteId(value);
@@ -116,69 +116,69 @@ export default function FollowupNote({ notes, isEditMode, onEdit, onToggleEditMo
             </div>
           </div>
         )}
-        
+
         <Tabs defaultValue="follow-up-details" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="follow-up-details">Follow-up Details</TabsTrigger>
             <TabsTrigger value="review-of-systems">Review of Systems</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="follow-up-details" className="mt-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Diagnosis & Status */}
               <div className="bg-slate-50 p-4 rounded-lg">
                 <h3 className="text-base font-semibold text-slate-800 mb-3">Diagnosis & Status</h3>
                 <div className="space-y-3">
-                  <EditableField 
+                  <EditableField
                     label="Diagnosis"
                     value={typeof noteData?.diagnosis === 'string' ? noteData.diagnosis : ''}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.diagnosis")}
                   />
-                  
-                  <EditableField 
+
+                  <EditableField
                     label="Stage (Combined)"
                     value={noteData?.stage || ""}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.stage")}
                   />
-                  
-                  <EditableField 
+
+                  <EditableField
                     label="T Stage (Primary Tumor)"
                     value={noteData?.staging?.t_stage}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.staging.t_stage")}
                   />
-                  
-                  <EditableField 
+
+                  <EditableField
                     label="N Stage (Regional Lymph Nodes)"
                     value={noteData?.staging?.n_stage}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.staging.n_stage")}
                   />
-                  
-                  <EditableField 
+
+                  <EditableField
                     label="M Stage (Distant Metastasis)"
                     value={noteData?.staging?.m_stage}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.staging.m_stage")}
                   />
-                  
-                  <EditableField 
+
+                  <EditableField
                     label="Disease Status"
                     value={noteData?.disease_status || ""}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.disease_status")}
                   />
-                  
-                  <EditableField 
+
+                  <EditableField
                     label="Weeks Post-Treatment"
                     value={noteData?.weeks_post_treatment?.toString() || ""}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.weeks_post_treatment")}
                   />
-                  
-                  <EditableField 
+
+                  <EditableField
                     label="Next Follow-up"
                     value={noteData?.next_follow_up || ""}
                     isEditMode={isEditMode}
@@ -186,28 +186,28 @@ export default function FollowupNote({ notes, isEditMode, onEdit, onToggleEditMo
                   />
                 </div>
               </div>
-              
+
               {/* Side Effects & Recommendations */}
               <div className="bg-slate-50 p-4 rounded-lg">
                 <h3 className="text-base font-semibold text-slate-800 mb-3">Side Effects & Plan</h3>
                 <div className="space-y-3">
-                  <EditableField 
+                  <EditableField
                     label="Side Effects"
                     value={noteData?.side_effects || ""}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.side_effects")}
                     multiline
                   />
-                  
-                  <EditableField 
+
+                  <EditableField
                     label="Recommendations"
                     value={noteData?.recommendations || ""}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.recommendations")}
                     multiline
                   />
-                  
-                  <EditableField 
+
+                  <EditableField
                     label="Next Follow-up"
                     value={noteData?.next_follow_up || ""}
                     isEditMode={isEditMode}
@@ -215,57 +215,57 @@ export default function FollowupNote({ notes, isEditMode, onEdit, onToggleEditMo
                   />
                 </div>
               </div>
-              
+
               {/* Patient Assessment */}
               <div className="bg-slate-50 p-4 rounded-lg">
                 <h3 className="text-base font-semibold text-slate-800 mb-3">Patient Assessment</h3>
                 <div className="grid grid-cols-2 gap-3">
-                  <EditableField 
+                  <EditableField
                     label="KPS"
                     value={noteData?.assessment?.kps?.toString() || ""}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.assessment.kps")}
                   />
-                  
-                  <EditableField 
+
+                  <EditableField
                     label="ECOG"
                     value={noteData?.assessment?.ecog?.toString() || ""}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.assessment.ecog")}
                   />
-                  
-                  <EditableField 
+
+                  <EditableField
                     label="Pain Score"
                     value={noteData?.assessment?.pain_score?.toString() || ""}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.assessment.pain_score")}
                   />
-                  
-                  <EditableField 
+
+                  <EditableField
                     label="AUA"
                     value={noteData?.assessment?.aua?.toString() || ""}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.assessment.aua")}
                     isRequired={true}
                   />
-                  
-                  <EditableField 
+
+                  <EditableField
                     label="IIEF"
                     value={noteData?.assessment?.iief?.toString() || ""}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.assessment.iief")}
                     isRequired={true}
                   />
-                  
-                  <EditableField 
+
+                  <EditableField
                     label="SHIM"
                     value={noteData?.assessment?.shim?.toString() || ""}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.assessment.shim")}
                     isRequired={true}
                   />
-                  
-                  <EditableField 
+
+                  <EditableField
                     label="IPSS"
                     value={noteData?.assessment?.ipss?.toString() || ""}
                     isEditMode={isEditMode}
@@ -276,7 +276,7 @@ export default function FollowupNote({ notes, isEditMode, onEdit, onToggleEditMo
               </div>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="review-of-systems" className="mt-4">
             <div className="bg-slate-50 p-4 rounded-lg">
               <h3 className="text-base font-semibold text-slate-800 mb-3">Review of Systems</h3>
@@ -286,7 +286,7 @@ export default function FollowupNote({ notes, isEditMode, onEdit, onToggleEditMo
                   .map(([key, value]) => (
                     <div key={key} className="mb-3">
                       <p className="text-sm font-medium text-slate-500 capitalize">{key}:</p>
-                      <EditableField 
+                      <EditableField
                         label=""
                         value={value as string}
                         isEditMode={isEditMode}

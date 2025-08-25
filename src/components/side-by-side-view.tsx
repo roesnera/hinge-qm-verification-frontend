@@ -1,11 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent, CardHeader, CardTitle } from '@src/components/ui/card';
 import { Button } from '@src/components/ui/button';
-import { Separator } from '@src/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@src/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@src/components/ui/tabs';
 import { Badge } from '@src/components/ui/badge';
-import { X, FileText, Calendar, User, Building, Pencil, Save, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Note } from '@shared/schema';
+import { X, FileText, Calendar, User, Pencil, Save } from 'lucide-react';
+import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
 import ConsultNote from './notes/consult-note';
 import CTSimulationNote from './notes/ct-simulation-note';
 import DailyTreatmentNote from './notes/daily-treatment-note';
@@ -35,12 +33,12 @@ interface ClinicalNoteText {
   noteText: string;
 }
 
-export function SideBySideView({ 
-  selectedNote, 
-  isVisible, 
-  onClose, 
-  isEditMode, 
-  onEdit, 
+export function SideBySideView({
+  selectedNote,
+  isVisible,
+  onClose,
+  isEditMode,
+  onEdit,
   onToggleEditMode,
   onSave,
   activeTab,
@@ -52,7 +50,7 @@ export function SideBySideView({
 }: SideBySideViewProps) {
   const { data: clinicalNoteText, isLoading, error } = useQuery<ClinicalNoteText>({
     queryKey: ['/api/notes', selectedNote?.id, 'text'],
-    queryFn: () => 
+    queryFn: () =>
       fetch(`/api/notes/${selectedNote?.id}/text`)
         .then(res => {
           if (!res.ok) {
@@ -72,18 +70,18 @@ export function SideBySideView({
 
   const renderAbstractionComponent = () => {
     if (!selectedNote) return null;
-    
+
     // Apply edited changes to the selected note with deep merge
     const applyEditsToNote = (note: Note, edits: any): Note => {
       if (!edits) return note;
-      
+
       const result = { ...note };
-      
+
       // Apply edits using field paths (like "noteAbstraction.diagnosis.cancer_type")
       Object.entries(edits).forEach(([fieldPath, value]) => {
         const keys = fieldPath.split('.');
         let current = result as any;
-        
+
         // Navigate to the parent object, ensuring each level exists
         for (let i = 0; i < keys.length - 1; i++) {
           const key = keys[i];
@@ -92,17 +90,17 @@ export function SideBySideView({
           }
           current = current[key];
         }
-        
+
         // Set the final value only if the parent object exists
         const finalKey = keys[keys.length - 1];
         if (current && typeof current === 'object') {
           current[finalKey] = value;
         }
       });
-      
+
       return result;
     };
-    
+
     const noteWithEdits = applyEditsToNote(selectedNote, editedNotes[selectedNote.id]);
     const notes = [noteWithEdits];
     const props = {
@@ -172,7 +170,7 @@ export function SideBySideView({
             </Button>
           </div>
         </div>
-        
+
         <div className="flex-1 overflow-hidden flex flex-col">
           {/* Tab Navigation */}
           {groupedNotes && Object.keys(groupedNotes).length > 1 && (
@@ -182,17 +180,17 @@ export function SideBySideView({
                   {Object.entries(groupedNotes).map(([tabKey, tabNotes]) => {
                     const tabLabels = {
                       'consult': 'Consult',
-                      'ct-simulation': 'CT Simulation', 
+                      'ct-simulation': 'CT Simulation',
                       'daily-treatment': 'Daily Treatment',
                       'weekly-treatment': 'Weekly Treatment',
                       'nurse': 'Nurse Notes',
                       'treatment-summary': 'Treatment Summary',
                       'followup': 'Follow-up'
                     };
-                    
+
                     return (
-                      <TabsTrigger 
-                        key={tabKey} 
+                      <TabsTrigger
+                        key={tabKey}
                         value={tabKey}
                         className="text-xs"
                       >
@@ -209,7 +207,7 @@ export function SideBySideView({
               </Tabs>
             </div>
           )}
-          
+
           <div className="flex-1 overflow-auto p-6">
             {renderAbstractionComponent()}
           </div>
@@ -234,7 +232,7 @@ export function SideBySideView({
             </div>
           </div>
         </div>
-        
+
         <div className="flex-1 overflow-auto p-6">
           {isLoading ? (
             <div className="flex items-center justify-center h-32">
@@ -249,7 +247,7 @@ export function SideBySideView({
               </div>
             </div>
           ) : clinicalNoteText?.noteText ? (
-            <TextSearch 
+            <TextSearch
               text={clinicalNoteText.noteText}
               onHighlight={(searchTerm, matches) => {
                 // Optional: Handle search feedback here

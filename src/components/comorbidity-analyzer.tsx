@@ -1,12 +1,11 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@src/components/ui/card";
 import { Button } from "@src/components/ui/button";
 import { Badge } from "@src/components/ui/badge";
 import { Checkbox } from "@src/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@src/components/ui/select";
-import { Separator } from "@src/components/ui/separator";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Legend } from 'recharts';
-import { Note } from "@shared/schema";
+import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
 import { ComorbidityAnalyzer, CohortFilters } from "@src/lib/analytics";
 import { BarChart3, TrendingUp, Users, AlertTriangle } from "lucide-react";
 
@@ -21,7 +20,7 @@ export default function ComorbidityAnalyzerComponent({ notes }: ComorbidityAnaly
     comorbidities: [],
     ecogRange: { min: 0, max: 4 }
   });
-  
+
   const [selectedComorbidities, setSelectedComorbidities] = useState<string[]>([]);
   const [selectedTreatments, setSelectedTreatments] = useState<string[]>([]);
   const [showComparison, setShowComparison] = useState(false);
@@ -39,7 +38,7 @@ export default function ComorbidityAnalyzerComponent({ notes }: ComorbidityAnaly
     return analytics.filter(patient => {
       // Age filter
       if (filters.ageRange && patient.comorbidities.age) {
-        if (patient.comorbidities.age < filters.ageRange.min || 
+        if (patient.comorbidities.age < filters.ageRange.min ||
             patient.comorbidities.age > filters.ageRange.max) {
           return false;
         }
@@ -74,7 +73,7 @@ export default function ComorbidityAnalyzerComponent({ notes }: ComorbidityAnaly
   // Generate chart data for comorbidity distribution by treatment
   const comorbidityDistributionData = useMemo(() => {
     const treatmentData: Record<string, Record<string, number>> = {};
-    
+
     filteredAnalytics.forEach(patient => {
       const treatment = patient.treatment.treatmentType;
       if (!treatmentData[treatment]) {
@@ -86,7 +85,7 @@ export default function ComorbidityAnalyzerComponent({ notes }: ComorbidityAnaly
           Total: 0
         };
       }
-      
+
       treatmentData[treatment].Total++;
       if (patient.comorbidities.copd) treatmentData[treatment].COPD++;
       if (patient.comorbidities.diabetes) treatmentData[treatment].Diabetes++;
@@ -107,16 +106,16 @@ export default function ComorbidityAnalyzerComponent({ notes }: ComorbidityAnaly
   // Generate treatment interruption data
   const interruptionData = useMemo(() => {
     const groups = ['Non-Diabetic', 'Diabetic'];
-    
+
     return groups.map(group => {
-      const patients = filteredAnalytics.filter(p => 
+      const patients = filteredAnalytics.filter(p =>
         group === 'Diabetic' ? p.comorbidities.diabetes : !p.comorbidities.diabetes
       );
-      
+
       const interruptions = patients.map(p => p.tolerance.interruptions);
-      const avg = interruptions.length > 0 ? 
+      const avg = interruptions.length > 0 ?
         interruptions.reduce((sum, val) => sum + val, 0) / interruptions.length : 0;
-      
+
       return {
         group,
         interruptions: avg.toFixed(1),
@@ -128,7 +127,7 @@ export default function ComorbidityAnalyzerComponent({ notes }: ComorbidityAnaly
   // Generate survival data for chart
   const survivalData = useMemo(() => {
     const treatmentGroups: Record<string, { months: number[]; copd: boolean[] }> = {};
-    
+
     filteredAnalytics.forEach(patient => {
       if (patient.outcomes.survivalMonths !== undefined) {
         const key = patient.treatment.treatmentType;
@@ -143,21 +142,21 @@ export default function ComorbidityAnalyzerComponent({ notes }: ComorbidityAnaly
     // Generate mock survival curves for visualization
     const timePoints = [0, 6, 12, 18, 24, 30, 36];
     const curves: Array<{ time: number; [key: string]: number }> = [];
-    
+
     timePoints.forEach(time => {
       const point: { time: number; [key: string]: number } = { time };
-      
+
       Object.entries(treatmentGroups).forEach(([treatment, data]) => {
         const copdPatients = data.months.filter((_, i) => data.copd[i]);
         const nonCopdPatients = data.months.filter((_, i) => !data.copd[i]);
-        
+
         // Calculate survival probability (simplified)
         const calculateSurvival = (months: number[], timePoint: number) => {
           if (months.length === 0) return 0;
           const surviving = months.filter(m => m >= timePoint).length;
           return surviving / months.length;
         };
-        
+
         if (copdPatients.length > 0) {
           point[`${treatment} (+COPD)`] = calculateSurvival(copdPatients, time);
         }
@@ -165,10 +164,10 @@ export default function ComorbidityAnalyzerComponent({ notes }: ComorbidityAnaly
           point[`${treatment} (-COPD)`] = calculateSurvival(nonCopdPatients, time);
         }
       });
-      
+
       curves.push(point);
     });
-    
+
     return curves;
   }, [filteredAnalytics]);
 
@@ -238,7 +237,7 @@ export default function ComorbidityAnalyzerComponent({ notes }: ComorbidityAnaly
                     <Checkbox
                       id={`treatment-${treatment}`}
                       checked={selectedTreatments.includes(treatment)}
-                      onCheckedChange={(checked) => 
+                      onCheckedChange={(checked) =>
                         handleTreatmentChange(treatment, checked as boolean)
                       }
                     />
@@ -259,7 +258,7 @@ export default function ComorbidityAnalyzerComponent({ notes }: ComorbidityAnaly
                     <Checkbox
                       id={`comorbidity-${comorbidity}`}
                       checked={selectedComorbidities.includes(comorbidity)}
-                      onCheckedChange={(checked) => 
+                      onCheckedChange={(checked) =>
                         handleComorbidityChange(comorbidity, checked as boolean)
                       }
                     />
@@ -272,7 +271,7 @@ export default function ComorbidityAnalyzerComponent({ notes }: ComorbidityAnaly
             </div>
 
             <div className="flex gap-2">
-              <Button 
+              <Button
                 onClick={() => setShowComparison(!showComparison)}
                 variant={showComparison ? "default" : "outline"}
               >
@@ -302,10 +301,10 @@ export default function ComorbidityAnalyzerComponent({ notes }: ComorbidityAnaly
                 <Tooltip />
                 <Legend />
                 {Object.keys(survivalData[0] || {}).filter(key => key !== 'time').map((key, index) => (
-                  <Line 
+                  <Line
                     key={key}
-                    type="monotone" 
-                    dataKey={key} 
+                    type="monotone"
+                    dataKey={key}
                     stroke={['#3b82f6', '#f59e0b', '#10b981', '#ef4444'][index % 4]}
                     strokeWidth={2}
                   />

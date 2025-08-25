@@ -3,11 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@src/components/ui/car
 import EditableField from "@src/components/editable-field";
 import { Button } from "@src/components/ui/button";
 import { Pencil, FileText } from "lucide-react";
-import { Note } from "@shared/schema";
+import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
 import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@src/components/ui/select";
 import { Badge } from "@src/components/ui/badge";
-import DynamicFieldEditor from "@src/components/dynamic-field-editor";
 
 interface CTSimulationNoteProps {
   notes: Note[];
@@ -30,18 +29,18 @@ export default function CTSimulationNote({ notes, isEditMode, onEdit, onToggleEd
   }
 
   // Sort notes by creation date (newest first)
-  const sortedNotes = [...notes].sort((a, b) => 
+  const sortedNotes = [...notes].sort((a, b) =>
     new Date(b.creation).getTime() - new Date(a.creation).getTime()
   );
 
   // State to track which note is currently selected
   const [selectedNoteId, setSelectedNoteId] = useState<string>(sortedNotes[0].id);
-  
+
   // Find the currently selected note
   const selectedNote = sortedNotes.find(n => n.id === selectedNoteId) || sortedNotes[0];
   const note = selectedNote;
   const noteData = note.noteAbstraction;
-  
+
   // Format the date for display
   const creationDate = note.creation ? new Date(note.creation) : null;
   const formattedDate = creationDate ? format(creationDate, 'yyyy-MM-dd') : 'Unknown date';
@@ -69,16 +68,16 @@ export default function CTSimulationNote({ notes, isEditMode, onEdit, onToggleEd
         </div>
         <div className="flex gap-2">
           {onViewNote && (
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="sm"
               onClick={() => onViewNote(note)}
             >
               <FileText className="h-4 w-4 mr-1.5" /> View Original
             </Button>
           )}
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="sm"
             onClick={onToggleEditMode}
           >
@@ -86,7 +85,7 @@ export default function CTSimulationNote({ notes, isEditMode, onEdit, onToggleEd
           </Button>
         </div>
       </CardHeader>
-      
+
       <CardContent className="p-4">
         {sortedNotes.length > 1 && (
           <div className="mb-4">
@@ -94,7 +93,7 @@ export default function CTSimulationNote({ notes, isEditMode, onEdit, onToggleEd
               <label className="text-sm font-medium">
                 Select note version:
               </label>
-              <Select 
+              <Select
                 value={selectedNoteId}
                 onValueChange={(value: string) => {
                   setSelectedNoteId(value);
@@ -114,7 +113,7 @@ export default function CTSimulationNote({ notes, isEditMode, onEdit, onToggleEd
             </div>
           </div>
         )}
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* CT Simulation Details */}
           <div className="bg-slate-50 p-4 rounded-lg">
@@ -123,46 +122,46 @@ export default function CTSimulationNote({ notes, isEditMode, onEdit, onToggleEd
               <span>{formattedDate}</span>
             </div>
             <div className="space-y-3">
-              <EditableField 
+              <EditableField
                 label="Cardiac Device"
                 value={noteData?.cardiac_device}
                 isEditMode={isEditMode}
                 onEdit={createEditHandler("noteAbstraction.cardiac_device")}
               />
-              <EditableField 
+              <EditableField
                 label="Previous RT Details"
                 value={noteData?.previous_rt_details}
                 isEditMode={isEditMode}
                 onEdit={createEditHandler("noteAbstraction.previous_rt_details")}
               />
-              <EditableField 
+              <EditableField
                 label="Scan"
                 value={noteData?.scan}
                 isEditMode={isEditMode}
                 onEdit={createEditHandler("noteAbstraction.scan")}
               />
-              <EditableField 
+              <EditableField
                 label="Immobilization"
                 value={noteData?.immobilization}
                 isEditMode={isEditMode}
                 onEdit={createEditHandler("noteAbstraction.immobilization")}
               />
-              <EditableField 
+              <EditableField
                 label="Additional Details"
                 value={noteData?.addtional_details}
                 isEditMode={isEditMode}
                 onEdit={createEditHandler("noteAbstraction.addtional_details")}
                 multiline
               />
-              <EditableField 
+              <EditableField
                 label="Start Date"
                 value={noteData?.start_date}
                 isEditMode={isEditMode}
                 onEdit={createEditHandler("noteAbstraction.start_date")}
               />
-              
+
               {/* Required Simulation Fields */}
-              <EditableField 
+              <EditableField
                 label="Rectal Empty Instructions"
                 value={noteData?.rectal_empty_instructions}
                 isEditMode={isEditMode}
@@ -170,7 +169,7 @@ export default function CTSimulationNote({ notes, isEditMode, onEdit, onToggleEd
                 isRequired={true}
                 multiline
               />
-              <EditableField 
+              <EditableField
                 label="Bladder Filling Instructions"
                 value={noteData?.bladder_filling_instructions}
                 isEditMode={isEditMode}

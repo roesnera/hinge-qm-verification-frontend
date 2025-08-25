@@ -1,11 +1,8 @@
-import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent, CardHeader, CardTitle } from '@src/components/ui/card';
 import { Button } from '@src/components/ui/button';
-import { ScrollArea } from '@src/components/ui/scroll-area';
 import { Separator } from '@src/components/ui/separator';
 import { X, FileText, Calendar, User, Building } from 'lucide-react';
-import { Note } from '@shared/schema';
+import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
 
 interface ClinicalNotePanelProps {
   note: Note | null;
@@ -20,7 +17,7 @@ interface ClinicalNoteText {
 export function ClinicalNotePanel({ note, isOpen, onClose }: ClinicalNotePanelProps) {
   const { data: clinicalNoteText, isLoading, error } = useQuery<ClinicalNoteText>({
     queryKey: ['/api/notes', note?.id, 'text'],
-    queryFn: () => 
+    queryFn: () =>
       fetch(`/api/notes/${note?.id}/text`)
         .then(res => {
           if (!res.ok) {
@@ -38,7 +35,7 @@ export function ClinicalNotePanel({ note, isOpen, onClose }: ClinicalNotePanelPr
   return (
     <>
       {/* Overlay to close panel when clicking outside */}
-      <div 
+      <div
         className="fixed inset-0 bg-black bg-opacity-25 z-40"
         onClick={onClose}
       />
@@ -91,7 +88,7 @@ export function ClinicalNotePanel({ note, isOpen, onClose }: ClinicalNotePanelPr
           <div className="flex-1 p-4 overflow-hidden">
             <h3 className="text-md font-semibold mb-3 text-gray-900">Original Clinical Note</h3>
             <Separator className="mb-4" />
-            
+
             {isLoading ? (
               <div className="flex items-center justify-center h-32">
                 <div className="text-gray-500">Loading clinical note...</div>
@@ -107,9 +104,9 @@ export function ClinicalNotePanel({ note, isOpen, onClose }: ClinicalNotePanelPr
             ) : clinicalNoteText?.noteText ? (
               <div className="h-full overflow-auto bg-white">
                 <div className="bg-gray-50 p-6 rounded-lg border border-gray-300 min-h-full">
-                  <div 
+                  <div
                     className="whitespace-pre-wrap text-sm leading-6 text-black font-mono"
-                    style={{ 
+                    style={{
                       backgroundColor: '#ffffff',
                       color: '#000000',
                       padding: '16px',

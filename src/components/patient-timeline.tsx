@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Note } from "@shared/schema";
-import { format, parseISO } from "date-fns";
+import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
+import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@src/components/ui/card";
 import { Badge } from "@src/components/ui/badge";
 import { Button } from "@src/components/ui/button";
@@ -13,20 +13,20 @@ interface PatientTimelineProps {
 export default function PatientTimeline({ notes }: PatientTimelineProps) {
   const [timelineEvents, setTimelineEvents] = useState<{date: Date, type: string, id: string}[]>([]);
   const [showMoreRows, setShowMoreRows] = useState(false);
-  
+
   useEffect(() => {
     if (!notes || notes.length === 0) return;
-    
+
     const events = notes.map(note => {
       // Determine event type from noteType or description
       let type = "other";
-      
+
       if (note.noteType) {
         type = note.noteType.toLowerCase();
       } else if (note.description) {
         type = note.description.toLowerCase();
       }
-      
+
       // Map to user-friendly type
       let displayType = "Note";
       if (type.includes("consult")) displayType = "Consult";
@@ -36,28 +36,28 @@ export default function PatientTimeline({ notes }: PatientTimelineProps) {
       else if (type.includes("nurse")) displayType = "Nurse Note";
       else if (type.includes("treatment") && type.includes("summary")) displayType = "Treatment Summary";
       else if (type.includes("follow") && (type.includes("up") || type.includes("-up"))) displayType = "Follow-up";
-      
+
       return {
         date: new Date(note.creation),
         type: displayType,
         id: note.id
       };
     });
-    
+
     // Sort by date (oldest first for timeline display)
     events.sort((a, b) => a.date.getTime() - b.date.getTime());
-    
+
     setTimelineEvents(events);
   }, [notes]);
-  
+
   if (!notes || notes.length === 0) {
     return null;
   }
-  
+
   // Get first and last dates for timeline range
   const startDate = timelineEvents.length > 0 ? format(timelineEvents[0].date, 'MMM d, yyyy') : '';
   const endDate = timelineEvents.length > 0 ? format(timelineEvents[timelineEvents.length - 1].date, 'MMM d, yyyy') : '';
-  
+
   const getEventColor = (type: string) => {
     switch(type) {
       case "Consult": return "bg-blue-500";
@@ -70,7 +70,7 @@ export default function PatientTimeline({ notes }: PatientTimelineProps) {
       default: return "bg-gray-500";
     }
   };
-  
+
   return (
     <Card className="mb-6">
       <CardHeader className="pb-2">
@@ -81,7 +81,7 @@ export default function PatientTimeline({ notes }: PatientTimelineProps) {
           {startDate} to {endDate}
         </p>
       </CardHeader>
-      
+
       <CardContent className="p-4">
         <div className="relative">
           {/* Group events into rows of maximum 9 items */}
@@ -89,29 +89,29 @@ export default function PatientTimeline({ notes }: PatientTimelineProps) {
             // Create rows of events, max 9 per row
             const rows = [];
             const itemsPerRow = 9;
-            
+
             for (let i = 0; i < timelineEvents.length; i += itemsPerRow) {
               rows.push(timelineEvents.slice(i, i + itemsPerRow));
             }
-            
+
             // Only show first row unless "show more" is clicked
             const visibleRows = showMoreRows ? rows : (rows.length > 0 ? [rows[0]] : []);
             const hasMoreRows = rows.length > 1;
-            
+
             return (
               <div className="space-y-3">
                 {visibleRows.map((row, rowIndex) => (
                   <div key={rowIndex} className="relative">
                     {/* Horizontal timeline line for each row */}
                     <div className="absolute top-4 left-0 right-0 h-0.5 bg-slate-200"></div>
-                    
+
                     {/* Events in this row */}
                     <div className="flex justify-between relative">
                       {row.map((event, index) => (
                         <div key={index} className="flex-1 px-1 relative">
                           {/* Timeline node */}
                           <div className={`absolute top-4 -mt-2 left-1/2 -translate-x-1/2 h-4 w-4 rounded-full ${getEventColor(event.type)} ring-4 ring-white z-10`}></div>
-                          
+
                           {/* Event content */}
                           <div className="mt-8 flex flex-col items-center text-center">
                             <Badge variant="outline" className="mb-1 text-xs font-medium">
@@ -123,15 +123,15 @@ export default function PatientTimeline({ notes }: PatientTimelineProps) {
                           </div>
                         </div>
                       ))}
-                      
+
                       {/* Fill empty spaces in the last row if needed */}
-                      {rowIndex === visibleRows.length - 1 && row.length < itemsPerRow && 
+                      {rowIndex === visibleRows.length - 1 && row.length < itemsPerRow &&
                         Array(itemsPerRow - row.length).fill(0).map((_, i) => (
                           <div key={`empty-${i}`} className="flex-1 px-1"></div>
                         ))
                       }
                     </div>
-                    
+
                     {/* Row connector for multiple rows */}
                     {rowIndex < visibleRows.length - 1 && (
                       <div className="flex justify-center mt-1">
@@ -140,13 +140,13 @@ export default function PatientTimeline({ notes }: PatientTimelineProps) {
                     )}
                   </div>
                 ))}
-                
+
                 {/* Show more/less button */}
                 {hasMoreRows && (
                   <div className="flex justify-center mt-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
+                    <Button
+                      variant="outline"
+                      size="sm"
                       onClick={() => setShowMoreRows(!showMoreRows)}
                       className="text-xs flex items-center gap-1"
                     >

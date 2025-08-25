@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@src/components/ui/car
 import EditableField from "@src/components/editable-field";
 import { Button } from "@src/components/ui/button";
 import { Pencil, FileText } from "lucide-react";
-import { Note } from "@shared/schema";
+import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
 import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@src/components/ui/select";
 import { Badge } from "@src/components/ui/badge";
@@ -29,18 +29,18 @@ export default function WeeklyTreatmentNote({ notes, isEditMode, onEdit, onToggl
   }
 
   // Sort notes by creation date (newest first)
-  const sortedNotes = [...notes].sort((a, b) => 
+  const sortedNotes = [...notes].sort((a, b) =>
     new Date(b.creation).getTime() - new Date(a.creation).getTime()
   );
 
   // State to track which note is currently selected
   const [selectedNoteId, setSelectedNoteId] = useState<string>(sortedNotes[0].id);
-  
+
   // Find the currently selected note
   const selectedNote = sortedNotes.find(n => n.id === selectedNoteId) || sortedNotes[0];
   const note = selectedNote;
   const noteData = note.noteAbstraction;
-  
+
   // Format the date for display
   const creationDate = note.creation ? new Date(note.creation) : null;
   const formattedDate = creationDate ? format(creationDate, 'MMM d, yyyy') : 'Unknown date';
@@ -68,16 +68,16 @@ export default function WeeklyTreatmentNote({ notes, isEditMode, onEdit, onToggl
         </div>
         <div className="flex gap-2">
           {onViewNote && (
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="sm"
               onClick={() => onViewNote(note)}
             >
               <FileText className="h-4 w-4 mr-1.5" /> View Original
             </Button>
           )}
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="sm"
             onClick={onToggleEditMode}
           >
@@ -85,7 +85,7 @@ export default function WeeklyTreatmentNote({ notes, isEditMode, onEdit, onToggl
           </Button>
         </div>
       </CardHeader>
-      
+
       <CardContent className="p-4">
         {sortedNotes.length > 1 && (
           <div className="mb-4">
@@ -93,7 +93,7 @@ export default function WeeklyTreatmentNote({ notes, isEditMode, onEdit, onToggl
               <label className="text-sm font-medium">
                 Select note version:
               </label>
-              <Select 
+              <Select
                 value={selectedNoteId}
                 onValueChange={(value: string) => {
                   setSelectedNoteId(value);
@@ -113,7 +113,7 @@ export default function WeeklyTreatmentNote({ notes, isEditMode, onEdit, onToggl
             </div>
           </div>
         )}
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Weekly Treatment Details */}
           <div className="bg-slate-50 p-4 rounded-lg">
@@ -122,30 +122,30 @@ export default function WeeklyTreatmentNote({ notes, isEditMode, onEdit, onToggl
               <span>{formattedDate}</span>
             </div>
             <div className="space-y-3">
-              <EditableField 
+              <EditableField
                 label="Diagnosis"
                 value={noteData?.diagnosis}
                 isEditMode={isEditMode}
                 onEdit={createEditHandler("noteAbstraction.diagnosis")}
                 multiline
               />
-              
+
               {/* TNM Staging */}
-              <EditableField 
+              <EditableField
                 label="T Stage (Primary Tumor)"
                 value={noteData?.staging?.t_stage}
                 isEditMode={isEditMode}
                 onEdit={createEditHandler("noteAbstraction.staging.t_stage")}
               />
-              
-              <EditableField 
+
+              <EditableField
                 label="N Stage (Regional Lymph Nodes)"
                 value={noteData?.staging?.n_stage}
                 isEditMode={isEditMode}
                 onEdit={createEditHandler("noteAbstraction.staging.n_stage")}
               />
-              
-              <EditableField 
+
+              <EditableField
                 label="M Stage (Distant Metastasis)"
                 value={noteData?.staging?.m_stage}
                 isEditMode={isEditMode}
@@ -153,39 +153,39 @@ export default function WeeklyTreatmentNote({ notes, isEditMode, onEdit, onToggl
               />
               {noteData?.treatment_sites && noteData.treatment_sites[0] && (
                 <>
-                  <EditableField 
+                  <EditableField
                     label="Treatment Site"
                     value={noteData.treatment_sites[0].treatment_site_name}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.treatment_sites[0].treatment_site_name")}
                     isRequired={true}
                   />
-                  <EditableField 
+                  <EditableField
                     label="Treatment Number"
                     value={noteData.treatment_sites[0].treatment_number}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.treatment_sites[0].treatment_number")}
                   />
-                  <EditableField 
+                  <EditableField
                     label="Daily Dose (cGy)"
                     value={noteData.treatment_sites[0].daily_dose}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.treatment_sites[0].daily_dose")}
                   />
-                  <EditableField 
+                  <EditableField
                     label="Cumulative Dose (cGy)"
                     value={noteData.treatment_sites[0].cumulative_dose_received_to_date}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.treatment_sites[0].cumulative_dose_received_to_date")}
                   />
-                  <EditableField 
+                  <EditableField
                     label="Total Planned Dose (cGy)"
                     value={noteData.treatment_sites[0].total_dose}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.treatment_sites[0].total_dose")}
                     isRequired={true}
                   />
-                  <EditableField 
+                  <EditableField
                     label="First Treatment Date"
                     value={noteData.treatment_sites[0].first_treatment_date}
                     isEditMode={isEditMode}
@@ -201,32 +201,32 @@ export default function WeeklyTreatmentNote({ notes, isEditMode, onEdit, onToggl
           <div className="bg-slate-50 p-4 rounded-lg">
             <h3 className="text-sm font-semibold text-slate-500 uppercase mb-3">Patient Condition</h3>
             <div className="space-y-3">
-              <EditableField 
+              <EditableField
                 label="Subjective"
                 value={noteData?.subjective}
                 isEditMode={isEditMode}
                 onEdit={createEditHandler("noteAbstraction.subjective")}
               />
-              <EditableField 
+              <EditableField
                 label="Radiation Side Effects"
                 value={noteData?.radiation_side_effects}
                 isEditMode={isEditMode}
                 onEdit={createEditHandler("noteAbstraction.radiation_side_effects")}
               />
-              <EditableField 
+              <EditableField
                 label="Concurrent Chemotherapy"
                 value={noteData?.concurrent_chemotherapy}
                 isEditMode={isEditMode}
                 onEdit={createEditHandler("noteAbstraction.concurrent_chemotherapy")}
               />
-              <EditableField 
+              <EditableField
                 label="Next Steps"
                 value={noteData?.next_steps}
                 isEditMode={isEditMode}
                 onEdit={createEditHandler("noteAbstraction.next_steps")}
                 multiline
               />
-              <EditableField 
+              <EditableField
                 label="Follow-up"
                 value={noteData?.follow_up}
                 isEditMode={isEditMode}
@@ -234,19 +234,19 @@ export default function WeeklyTreatmentNote({ notes, isEditMode, onEdit, onToggl
               />
               {noteData?.ctcae && (
                 <>
-                  <EditableField 
+                  <EditableField
                     label="Pain"
                     value={noteData.ctcae.pain}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.ctcae.pain")}
                   />
-                  <EditableField 
+                  <EditableField
                     label="Fatigue"
                     value={noteData.ctcae.fatigue}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.ctcae.fatigue")}
                   />
-                  <EditableField 
+                  <EditableField
                     label="Dermatitis"
                     value={noteData.ctcae.dermatitis}
                     isEditMode={isEditMode}
@@ -263,31 +263,31 @@ export default function WeeklyTreatmentNote({ notes, isEditMode, onEdit, onToggl
             <div className="grid grid-cols-2 gap-3">
               {noteData?.vitals && (
                 <>
-                  <EditableField 
+                  <EditableField
                     label="Temperature"
                     value={noteData.vitals.temperature}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.vitals.temperature")}
                   />
-                  <EditableField 
+                  <EditableField
                     label="Blood Pressure"
                     value={noteData.vitals.blood_pressure}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.vitals.blood_pressure")}
                   />
-                  <EditableField 
+                  <EditableField
                     label="Pulse"
                     value={noteData.vitals.pulse}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.vitals.pulse")}
                   />
-                  <EditableField 
+                  <EditableField
                     label="Respiration"
                     value={noteData.vitals.respiration}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.vitals.respiration")}
                   />
-                  <EditableField 
+                  <EditableField
                     label="Pain"
                     value={noteData.vitals.pain}
                     isEditMode={isEditMode}
@@ -302,7 +302,7 @@ export default function WeeklyTreatmentNote({ notes, isEditMode, onEdit, onToggl
           {/* Follow-up */}
           <div className="bg-slate-50 p-4 rounded-lg">
             <h3 className="text-sm font-semibold text-slate-500 uppercase mb-3">Follow-up</h3>
-            <EditableField 
+            <EditableField
               label="Next Steps"
               value={noteData?.follow_up}
               isEditMode={isEditMode}

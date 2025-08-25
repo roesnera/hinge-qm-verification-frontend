@@ -10,9 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@intelligenthealthsolutions/hinge-qm-verification": "file:.yalc/@intelligenthealthsolutions/hinge-qm-verification",
     "@tanstack/react-query": "^5.85.5",
     "@types/node": "^24.3.0",
     "class-variance-authority": "^0.7.1",
+    "date-fns": "^4.1.0",
     "lucide-react": "^0.541.0",
     "radix-ui": "^1.4.3",
     "react": "^19.1.1",

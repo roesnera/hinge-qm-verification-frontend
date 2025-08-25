@@ -4,10 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@src/components/ui/car
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@src/components/ui/select';
 import { Label } from '@src/components/ui/label';
 import { Checkbox } from '@src/components/ui/checkbox';
-import { Button } from '@src/components/ui/button';
 import { Loader2, BarChart3, PieChart, LineChart, Table, Filter } from 'lucide-react';
 import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, PieChart as RechartsPieChart, Cell } from 'recharts';
-import { Note } from '@shared/schema';
+import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
 
 interface FacilitiesData {
   facilities: Record<string, string[]>;
@@ -42,7 +41,7 @@ export default function ClinicalDashboard({ selectedFacility: propSelectedFacili
   // Filter notes by selected facility
   const facilityNotes = useMemo(() => {
     if (!allNotesData || !selectedFacility || !facilitiesData) return [];
-    
+
     const facilityPatients = facilitiesData.facilities[selectedFacility] || [];
     return allNotesData.filter(note => facilityPatients.includes(note.patient_id));
   }, [allNotesData, selectedFacility, facilitiesData]);
@@ -50,7 +49,7 @@ export default function ClinicalDashboard({ selectedFacility: propSelectedFacili
   // Filter notes by note type
   const filteredNotes = useMemo(() => {
     if (selectedNoteType === 'all') return facilityNotes;
-    return facilityNotes.filter(note => 
+    return facilityNotes.filter(note =>
       note.noteType?.toLowerCase().includes(selectedNoteType.toLowerCase()) ||
       note.description?.toLowerCase().includes(selectedNoteType.toLowerCase())
     );
@@ -66,7 +65,7 @@ export default function ClinicalDashboard({ selectedFacility: propSelectedFacili
 
     console.log('Analyzing facility notes for elements:', facilityNotes.length);
     const elements = new Set<string>();
-    
+
     facilityNotes.forEach((note, index) => {
       console.log(`Note ${index}:`, note.noteAbstraction ? 'Has abstraction' : 'No abstraction');
       if (note.noteAbstraction) {
@@ -77,13 +76,13 @@ export default function ClinicalDashboard({ selectedFacility: propSelectedFacili
     const sortedElements = Array.from(elements).sort();
     console.log('Found elements:', sortedElements);
     setAvailableElements(sortedElements);
-    
+
     // Auto-select some common elements
     const commonElements = sortedElements.filter(elem => {
       const lower = elem.toLowerCase();
-      return lower.includes('psa') || 
-             lower.includes('gleason') || 
-             lower.includes('pain') || 
+      return lower.includes('psa') ||
+             lower.includes('gleason') ||
+             lower.includes('pain') ||
              lower.includes('weight') ||
              lower.includes('stage') ||
              lower.includes('grade') ||
@@ -91,7 +90,7 @@ export default function ClinicalDashboard({ selectedFacility: propSelectedFacili
              lower.includes('diagnosis') ||
              lower.includes('treatment');
     }).slice(0, 8);
-    
+
     console.log('Auto-selected elements:', commonElements);
     setSelectedElements(commonElements);
   }, [facilityNotes]);
@@ -107,7 +106,7 @@ export default function ClinicalDashboard({ selectedFacility: propSelectedFacili
       // Add the key if it has any value (including empty strings, 0, false)
       if (value !== null && value !== undefined) {
         keys.add(fullKey);
-        
+
         // Recursively extract from nested objects (but not arrays)
         if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
           extractKeys(value, fullKey, keys);
@@ -128,16 +127,16 @@ export default function ClinicalDashboard({ selectedFacility: propSelectedFacili
 
     filteredNotes.forEach(note => {
       if (!note.noteAbstraction) return;
-      
+
       const value = getNestedValue(note.noteAbstraction, element);
       if (value !== null && value !== undefined && value !== '') {
         const patientId = note.patient_id;
         const noteDate = new Date(note.creation).toLocaleDateString();
-        
+
         if (!patientData.has(patientId)) {
           patientData.set(patientId, []);
         }
-        
+
         patientData.get(patientId)?.push({
           date: noteDate,
           value: value,
@@ -167,12 +166,12 @@ export default function ClinicalDashboard({ selectedFacility: propSelectedFacili
 
     filteredNotes.forEach(note => {
       if (!note.noteAbstraction) return;
-      
+
       const patientId = note.patient_id;
       if (!patientMap.has(patientId)) {
         patientMap.set(patientId, { patient_id: patientId });
       }
-      
+
       const patientRow = patientMap.get(patientId);
       selectedElements.forEach(element => {
         const value = getNestedValue(note.noteAbstraction, element);
@@ -228,10 +227,10 @@ export default function ClinicalDashboard({ selectedFacility: propSelectedFacili
           <Tooltip />
           <Legend />
           {Object.keys(patientGroups).map((patient_id, index) => (
-            <Line 
+            <Line
               key={patient_id}
-              type="monotone" 
-              dataKey={patient_id} 
+              type="monotone"
+              dataKey={patient_id}
               stroke={COLORS[index % COLORS.length]}
               connectNulls={false}
             />
@@ -313,7 +312,7 @@ export default function ClinicalDashboard({ selectedFacility: propSelectedFacili
     const noteType = note.noteType || note.description || note.title || 'Unknown';
     return noteType.toString().trim();
   }).filter(type => type && type !== 'Unknown'))).sort();
-  
+
   console.log('Available note types:', noteTypes);
 
   if (isLoading) {
@@ -355,7 +354,7 @@ export default function ClinicalDashboard({ selectedFacility: propSelectedFacili
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div className="text-center py-8 border-2 border-dashed border-gray-200 rounded-lg">
                 <BarChart3 className="w-16 h-16 mx-auto text-gray-400 mb-4" />
                 <h3 className="text-lg font-semibold text-gray-600 mb-2">Select a Facility</h3>
@@ -383,7 +382,7 @@ export default function ClinicalDashboard({ selectedFacility: propSelectedFacili
                 Analyzing {facilityNotes.length} total notes from {facilitiesData?.facilities[selectedFacility]?.length || 0} patients
               </p>
             </div>
-            
+
             {/* Facility Selection */}
             <div className="min-w-64">
               <Label htmlFor="facility-change" className="text-xs font-medium text-slate-600">Current Facility</Label>
@@ -429,8 +428,8 @@ export default function ClinicalDashboard({ selectedFacility: propSelectedFacili
                 ))
               ) : (
                 <div className="text-xs text-muted-foreground p-4 text-center border border-dashed rounded">
-                  {facilityNotes.length > 0 
-                    ? 'No abstraction elements found in selected facility notes' 
+                  {facilityNotes.length > 0
+                    ? 'No abstraction elements found in selected facility notes'
                     : 'Select a facility to see available data elements'
                   }
                 </div>

@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@src/components/ui/car
 import EditableField from "@src/components/editable-field";
 import { Button } from "@src/components/ui/button";
 import { Pencil, FileText } from "lucide-react";
-import { Note } from "@shared/schema";
+import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
 import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@src/components/ui/select";
 import { Badge } from "@src/components/ui/badge";
@@ -29,18 +29,18 @@ export default function NurseNote({ notes, isEditMode, onEdit, onToggleEditMode,
   }
 
   // Sort notes by creation date (newest first)
-  const sortedNotes = [...notes].sort((a, b) => 
+  const sortedNotes = [...notes].sort((a, b) =>
     new Date(b.creation).getTime() - new Date(a.creation).getTime()
   );
 
   // State to track which note is currently selected
   const [selectedNoteId, setSelectedNoteId] = useState<string>(sortedNotes[0].id);
-  
+
   // Find the currently selected note
   const selectedNote = sortedNotes.find(n => n.id === selectedNoteId) || sortedNotes[0];
   const note = selectedNote;
   const noteData = note.noteAbstraction;
-  
+
   // Format the date for display
   const creationDate = note.creation ? new Date(note.creation) : null;
   const formattedDate = creationDate ? format(creationDate, 'MM/dd/yyyy') : 'Unknown date';
@@ -76,16 +76,16 @@ export default function NurseNote({ notes, isEditMode, onEdit, onToggleEditMode,
         </div>
         <div className="flex gap-2">
           {onViewNote && (
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="sm"
               onClick={() => onViewNote(note)}
             >
               <FileText className="h-4 w-4 mr-1.5" /> View Original
             </Button>
           )}
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="sm"
             onClick={onToggleEditMode}
           >
@@ -93,7 +93,7 @@ export default function NurseNote({ notes, isEditMode, onEdit, onToggleEditMode,
           </Button>
         </div>
       </CardHeader>
-      
+
       <CardContent className="p-4">
         {sortedNotes.length > 1 && (
           <div className="mb-4">
@@ -101,7 +101,7 @@ export default function NurseNote({ notes, isEditMode, onEdit, onToggleEditMode,
               <label className="text-sm font-medium">
                 Select note version:
               </label>
-              <Select 
+              <Select
                 value={selectedNoteId}
                 onValueChange={(value: string) => {
                   setSelectedNoteId(value);
@@ -121,7 +121,7 @@ export default function NurseNote({ notes, isEditMode, onEdit, onToggleEditMode,
             </div>
           </div>
         )}
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Vitals */}
           <div className="bg-slate-50 p-4 rounded-lg">
@@ -129,13 +129,13 @@ export default function NurseNote({ notes, isEditMode, onEdit, onToggleEditMode,
             <div className="grid grid-cols-2 gap-3">
               {noteData?.vitals && (
                 <>
-                  <EditableField 
+                  <EditableField
                     label="Temperature"
                     value={noteData.vitals.temperature}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.vitals.temperature")}
                   />
-                  <EditableField 
+                  <EditableField
                     label="Blood Pressure"
                     value={formatBloodPressure(noteData.vitals.blood_pressure)}
                     isEditMode={isEditMode}
@@ -144,19 +144,19 @@ export default function NurseNote({ notes, isEditMode, onEdit, onToggleEditMode,
                       onEdit(note.id, "noteAbstraction.vitals.blood_pressure", value);
                     }}
                   />
-                  <EditableField 
+                  <EditableField
                     label="Pulse"
                     value={noteData.vitals.pulse}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.vitals.pulse")}
                   />
-                  <EditableField 
+                  <EditableField
                     label="Respiratory Rate"
                     value={noteData.vitals.respiratory_rate}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.vitals.respiratory_rate")}
                   />
-                  <EditableField 
+                  <EditableField
                     label="Weight"
                     value={noteData.vitals.weight ? `${noteData.vitals.weight} lbs` : null}
                     isEditMode={isEditMode}
@@ -167,7 +167,7 @@ export default function NurseNote({ notes, isEditMode, onEdit, onToggleEditMode,
                     }}
                   />
                   {noteData?.assessment && (
-                    <EditableField 
+                    <EditableField
                       label="Pain Score"
                       value={noteData.assessment.pain_score}
                       isEditMode={isEditMode}
@@ -185,31 +185,31 @@ export default function NurseNote({ notes, isEditMode, onEdit, onToggleEditMode,
             <div className="space-y-3">
               {noteData?.review_of_systems && (
                 <>
-                  <EditableField 
+                  <EditableField
                     label="General"
                     value={noteData.review_of_systems.general}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.review_of_systems.general")}
                   />
-                  <EditableField 
+                  <EditableField
                     label="Neuro"
                     value={noteData.review_of_systems.neuro}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.review_of_systems.neuro")}
                   />
-                  <EditableField 
+                  <EditableField
                     label="Mood"
                     value={noteData.review_of_systems.mood}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.review_of_systems.mood")}
                   />
-                  <EditableField 
+                  <EditableField
                     label="Energy"
                     value={noteData.review_of_systems.energy}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.review_of_systems.energy")}
                   />
-                  <EditableField 
+                  <EditableField
                     label="HEENT"
                     value={noteData.review_of_systems.HEENT}
                     isEditMode={isEditMode}
@@ -226,31 +226,31 @@ export default function NurseNote({ notes, isEditMode, onEdit, onToggleEditMode,
             <div className="space-y-3">
               {noteData?.review_of_systems && (
                 <>
-                  <EditableField 
+                  <EditableField
                     label="Cardiac"
                     value={noteData.review_of_systems.cardiac}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.review_of_systems.cardiac")}
                   />
-                  <EditableField 
+                  <EditableField
                     label="Pulmonary"
                     value={noteData.review_of_systems.pulmonary}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.review_of_systems.pulmonary")}
                   />
-                  <EditableField 
+                  <EditableField
                     label="GI"
                     value={noteData.review_of_systems.gi}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.review_of_systems.gi")}
                   />
-                  <EditableField 
+                  <EditableField
                     label="GU"
                     value={noteData.review_of_systems.gu}
                     isEditMode={isEditMode}
                     onEdit={createEditHandler("noteAbstraction.review_of_systems.gu")}
                   />
-                  <EditableField 
+                  <EditableField
                     label="Skin"
                     value={noteData.review_of_systems.skin}
                     isEditMode={isEditMode}
@@ -265,14 +265,14 @@ export default function NurseNote({ notes, isEditMode, onEdit, onToggleEditMode,
           <div className="bg-slate-50 p-4 rounded-lg">
             <h3 className="text-sm font-semibold text-slate-500 uppercase mb-3">Concerns & Interventions</h3>
             <div className="space-y-3">
-              <EditableField 
+              <EditableField
                 label="Concerns"
                 value={noteData?.concerns}
                 isEditMode={isEditMode}
                 onEdit={createEditHandler("noteAbstraction.concerns")}
                 multiline
               />
-              <EditableField 
+              <EditableField
                 label="Interventions"
                 value={noteData?.interventions}
                 isEditMode={isEditMode}
