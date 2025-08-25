@@ -28,19 +28,20 @@ export default function ClinicalDashboard({ selectedFacility: propSelectedFacili
   // Fetch facilities data
   const { data: facilitiesData } = useQuery<FacilitiesData>({
     queryKey: ['/api/facilities'],
-    queryFn: () => fetch('/api/facilities').then(res => res.json())
+    queryFn: () => fetch(`http://localhost:5000/api/facilities`).then(res => res.json())
   });
 
   // Fetch all notes for the selected facility
   const { data: allNotesData, isLoading } = useQuery<Note[]>({
     queryKey: ['/api/notes/all'],
-    queryFn: () => fetch('/api/notes/all').then(res => res.json()).then(data => data.notes),
+    queryFn: () => fetch(`http://localhost:5000/api/notes/all`).then(res => res.json()).then(data => data.notes),
     enabled: true
   });
 
   // Filter notes by selected facility
   const facilityNotes = useMemo(() => {
     if (!allNotesData || !selectedFacility || !facilitiesData) return [];
+  console.log('facility notes memoized fn called')
 
     const facilityPatients = facilitiesData.facilities[selectedFacility] || [];
     return allNotesData.filter(note => facilityPatients.includes(note.patient_id));

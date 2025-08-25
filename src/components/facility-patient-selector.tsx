@@ -21,8 +21,8 @@ export default function FacilityPatientSelector({ onSelect, selectedPatientId }:
   // Fetch facilities and their patients
   const { data: facilitiesData, isLoading, isError } = useQuery<FacilitiesData>({
     queryKey: ['/api/facilities'],
-    queryFn: () => 
-      fetch('/api/facilities')
+    queryFn: () =>
+      fetch(`${process.env.API_URL||'http://localhost:5000'}/api/facilities`)
         .then(res => res.json())
   });
 
@@ -31,7 +31,7 @@ export default function FacilityPatientSelector({ onSelect, selectedPatientId }:
     if (selectedFacility && facilitiesData?.facilities) {
       const patients = facilitiesData.facilities[selectedFacility] || [];
       setAvailablePatients(patients);
-      
+
       // If current selected patient is not in this facility, clear selection
       if (selectedPatientId && !patients.includes(selectedPatientId)) {
         onSelect("");
@@ -102,7 +102,7 @@ export default function FacilityPatientSelector({ onSelect, selectedPatientId }:
             Facility
           </Label>
           <Select value={selectedFacility} onValueChange={handleFacilityChange}>
-            <SelectTrigger 
+            <SelectTrigger
               id="facility-select"
               className="h-8 text-xs border-slate-300"
             >
@@ -135,12 +135,12 @@ export default function FacilityPatientSelector({ onSelect, selectedPatientId }:
             <User className="h-3 w-3 mr-1" />
             Patient ID
           </Label>
-          <Select 
-            value={selectedPatientId || ""} 
+          <Select
+            value={selectedPatientId || ""}
             onValueChange={handlePatientChange}
             disabled={!selectedFacility}
           >
-            <SelectTrigger 
+            <SelectTrigger
               id="patient-select"
               className={`h-8 text-xs border-slate-300 ${
                 !selectedFacility ? 'opacity-50 cursor-not-allowed' : ''

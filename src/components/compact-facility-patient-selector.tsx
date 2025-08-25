@@ -19,8 +19,8 @@ export default function CompactFacilityPatientSelector({ onSelect, selectedPatie
   // Fetch facilities and their patients
   const { data: facilitiesData, isLoading, isError } = useQuery<FacilitiesData>({
     queryKey: ['/api/facilities'],
-    queryFn: () => 
-      fetch('/api/facilities')
+    queryFn: () =>
+      fetch(`${process.env.API_URL||'http://localhost:5000'}/api/facilities`)
         .then(res => res.json())
   });
 
@@ -29,7 +29,7 @@ export default function CompactFacilityPatientSelector({ onSelect, selectedPatie
     if (selectedFacility && facilitiesData?.facilities) {
       const patients = facilitiesData.facilities[selectedFacility] || [];
       setAvailablePatients(patients);
-      
+
       // If current selected patient is not in this facility, clear selection
       if (selectedPatientId && !patients.includes(selectedPatientId)) {
         onSelect("");
@@ -119,12 +119,12 @@ export default function CompactFacilityPatientSelector({ onSelect, selectedPatie
           <User className="h-3 w-3 mr-1" />
           <span className="whitespace-nowrap">Patient:</span>
         </div>
-        <Select 
-          value={selectedPatientId || ""} 
+        <Select
+          value={selectedPatientId || ""}
           onValueChange={handlePatientChange}
           disabled={!selectedFacility}
         >
-          <SelectTrigger 
+          <SelectTrigger
             className={`h-7 w-[120px] text-xs border-slate-300 ${
               !selectedFacility ? 'opacity-50 cursor-not-allowed' : ''
             }`}

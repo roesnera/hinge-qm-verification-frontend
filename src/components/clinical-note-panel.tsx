@@ -18,7 +18,7 @@ export function ClinicalNotePanel({ note, isOpen, onClose }: ClinicalNotePanelPr
   const { data: clinicalNoteText, isLoading, error } = useQuery<ClinicalNoteText>({
     queryKey: ['/api/notes', note?.id, 'text'],
     queryFn: () =>
-      fetch(`/api/notes/${note?.id}/text`)
+      fetch(`${process.env.API_URL||'http://localhost:5000'}/api/notes/${note?.id}/text`)
         .then(res => {
           if (!res.ok) {
             throw new Error('Failed to fetch clinical note text');

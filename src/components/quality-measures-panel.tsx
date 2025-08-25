@@ -35,8 +35,8 @@ export default function QualityMeasuresPanel({ patientId, isOpen, onClose }: Qua
   // Fetch quality measures for the patient
   const { data: qualityMeasuresData, isLoading: isLoadingMeasures } = useQuery({
     queryKey: ['/api/patients', patientId, 'quality-measures'],
-    queryFn: () => 
-      fetch(`/api/patients/${patientId}/quality-measures`)
+    queryFn: () =>
+      fetch(`${process.env.API_URL||'http://localhost:5000'}/api/patients/${patientId}/quality-measures`)
         .then(res => res.json())
         .then(data => data.qualityMeasures),
     enabled: !!patientId && isOpen
@@ -71,7 +71,7 @@ export default function QualityMeasuresPanel({ patientId, isOpen, onClose }: Qua
         </Badge>
       );
     }
-    
+
     const normalizedOutcome = outcome.toLowerCase();
     const variants = {
       pass: 'bg-green-100 text-green-800 border-green-200',
@@ -79,10 +79,10 @@ export default function QualityMeasuresPanel({ patientId, isOpen, onClose }: Qua
       exclusion: 'bg-yellow-100 text-yellow-800 border-yellow-200',
       'missing data': 'bg-gray-100 text-gray-800 border-gray-200'
     };
-    
+
     return (
-      <Badge 
-        variant="outline" 
+      <Badge
+        variant="outline"
         className={`${variants[normalizedOutcome as keyof typeof variants] || 'bg-gray-100 text-gray-800'} capitalize`}
       >
         {getOutcomeIcon(normalizedOutcome)}
@@ -146,10 +146,10 @@ export default function QualityMeasuresPanel({ patientId, isOpen, onClose }: Qua
                     evaluation_steps: any[];
                     parentId: string;
                   }> = [];
-                  
+
                   qualityMeasuresData.forEach((measureDoc: QualityMeasure) => {
                     if (measureDoc.data) {
-                      Object.entries(measureDoc.data).forEach(([key, measure]) => {
+                      Object.entries(measureDoc.data).forEach(([_key, measure]) => {
                         allMeasures.push({
                           id: measure.id,
                           name: measure.name,
@@ -164,7 +164,7 @@ export default function QualityMeasuresPanel({ patientId, isOpen, onClose }: Qua
                   return (
                     <>
                       <h4 className="font-medium text-slate-700">Quality Measures ({allMeasures.length})</h4>
-                      
+
                       {allMeasures.map((measure) => (
                         <Card key={`${measure.parentId}-${measure.id}`} className="hover:shadow-md transition-shadow">
                           <Collapsible
@@ -182,18 +182,18 @@ export default function QualityMeasuresPanel({ patientId, isOpen, onClose }: Qua
                                       QM ID: {measure.id}
                                     </div>
                                   </div>
-                                  
+
                                   <div className="flex items-center gap-2 ml-2">
                                     {getOutcomeBadge(measure.final_outcome)}
-                                    {expandedMeasures.has(measure.id) ? 
-                                      <ChevronDown className="h-4 w-4" /> : 
+                                    {expandedMeasures.has(measure.id) ?
+                                      <ChevronDown className="h-4 w-4" /> :
                                       <ChevronRight className="h-4 w-4" />
                                     }
                                   </div>
                                 </div>
                               </CardHeader>
                             </CollapsibleTrigger>
-                            
+
                             <CollapsibleContent>
                               <CardContent className="pt-0">
                                 <div className="space-y-3">
@@ -208,9 +208,9 @@ export default function QualityMeasuresPanel({ patientId, isOpen, onClose }: Qua
                                       </div>
                                     </div>
                                   )}
-                                  
+
                                   <Separator />
-                                  
+
                                   {/* View Decision Tree Button */}
                                   <Button
                                     variant="outline"
@@ -219,7 +219,7 @@ export default function QualityMeasuresPanel({ patientId, isOpen, onClose }: Qua
                                       setSelectedMeasure({
                                         _id: measure.parentId,
                                         patient_id: patientId,
-                                        data: { 
+                                        data: {
                                           [measure.id]: {
                                             name: measure.name,
                                             id: measure.id,
@@ -267,7 +267,7 @@ export default function QualityMeasuresPanel({ patientId, isOpen, onClose }: Qua
                       <X className="h-5 w-5" />
                     </Button>
                   </div>
-                  
+
                   <div className="p-6">
                     <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded">
                       <div className="font-semibold text-green-900">🎯 Decision Tree Successfully Loaded!</div>
@@ -293,7 +293,7 @@ export default function QualityMeasuresPanel({ patientId, isOpen, onClose }: Qua
                               Start: Quality Measure Evaluation
                             </div>
                           </div>
-                          
+
                           {/* Tree Structure */}
                           <div className="flex flex-col items-center space-y-8">
                             {(measureData.evaluation_steps || []).map((step: any, stepIndex: number) => (
@@ -302,7 +302,7 @@ export default function QualityMeasuresPanel({ patientId, isOpen, onClose }: Qua
                                 {stepIndex > 0 && (
                                   <div className="w-1 h-8 bg-gray-400 mb-4"></div>
                                 )}
-                                
+
                                 {/* Decision Node */}
                                 <div className="relative flex items-center justify-center w-full">
                                   <div className="flex flex-col items-center bg-white border-2 border-gray-300 rounded-xl p-4 shadow-lg min-w-80">
@@ -328,12 +328,12 @@ export default function QualityMeasuresPanel({ patientId, isOpen, onClose }: Qua
                                           {step.id.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
                                         </div>
                                       </div>
-                                      
+
                                       <div className="text-sm">
                                         <span className="font-medium text-gray-600">Patient Value: </span>
                                         <span className="bg-blue-50 px-3 py-1 rounded-lg text-blue-800 font-mono font-bold">
-                                          {step.patient_value !== null && step.patient_value !== undefined 
-                                            ? String(step.patient_value) 
+                                          {step.patient_value !== null && step.patient_value !== undefined
+                                            ? String(step.patient_value)
                                             : 'Not Available'}
                                         </span>
                                       </div>
@@ -407,7 +407,7 @@ export default function QualityMeasuresPanel({ patientId, isOpen, onClose }: Qua
                             <div className="text-sm text-gray-600">
                               Evaluated through {(measureData.evaluation_steps || []).length} decision steps
                             </div>
-                            
+
                             {/* Summary of path taken */}
                             <div className="mt-4 text-xs text-gray-500 max-w-md">
                               <div className="font-medium mb-1">Decision Path Summary:</div>

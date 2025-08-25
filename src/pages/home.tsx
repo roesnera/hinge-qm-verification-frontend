@@ -46,32 +46,32 @@ export default function Home() {
   const { data: notesData, isLoading: isLoadingNotes } = useQuery({
     queryKey: ['/api/patients', selectedPatientId, 'notes'],
     queryFn: () =>
-      fetch(`/api/patients/${selectedPatientId}/notes`)
+      fetch(`${process.env.API_URL||'http://localhost:5000'}/api/patients/${selectedPatientId}/notes`)
         .then(res => res.json())
         .then(data => data.notes),
     enabled: !!selectedPatientId
   });
 
   // Fetch quality measures for the selected patient
-  const { data: qualityMeasuresData, isLoading: isLoadingQualityMeasures } = useQuery({
+  const { data: qualityMeasuresData, isLoading: _isLoadingQualityMeasures } = useQuery({
     queryKey: ['/api/patients', selectedPatientId, 'quality-measures'],
     queryFn: () =>
-      fetch(`/api/patients/${selectedPatientId}/quality-measures`)
+      fetch(`${process.env.API_URL||'http://localhost:5000'}/api/patients/${selectedPatientId}/quality-measures`)
         .then(res => res.json())
         .then(data => data.qualityMeasures),
     enabled: !!selectedPatientId
   });
 
   // Fetch all patient notes for analytics (when in analytics mode)
-  const { data: allNotesData, isLoading: isLoadingAllNotes } = useQuery({
+  const { data: _allNotesData, isLoading: _isLoadingAllNotes } = useQuery({
     queryKey: ['/api/patients/all-notes'],
     queryFn: async () => {
-      const patientsResponse = await fetch('/api/patients');
+      const patientsResponse = await fetch(`${process.env.API_URL||'http://localhost:5000'}/api/patients`);
       const { patientIds } = await patientsResponse.json();
 
       const allNotes: Note[] = [];
       for (const patientId of patientIds) {
-        const notesResponse = await fetch(`/api/patients/${patientId}/notes`);
+        const notesResponse = await fetch(`${process.env.API_URL||'http://localhost:5000'}/api/patients/${patientId}/notes`);
         const { notes } = await notesResponse.json();
         allNotes.push(...notes);
       }
@@ -153,7 +153,7 @@ export default function Home() {
           updateFieldByPath(updatedNote, fieldPath, value);
         });
 
-        await fetch(`/api/notes/${noteId}`, {
+        await fetch(`${process.env.API_URL||'http://localhost:5000'}/api/notes/${noteId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

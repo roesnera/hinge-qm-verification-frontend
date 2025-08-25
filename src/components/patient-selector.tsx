@@ -1,13 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from "@src/components/ui/select";
-import { Label } from "@src/components/ui/label";
-import { Loader2 } from "lucide-react";
 
 interface PatientSelectorProps {
   onSelect: (patientId: string) => void;
@@ -18,8 +9,8 @@ export default function PatientSelector({ onSelect, selectedPatientId }: Patient
   // Fetch patient IDs from the API
   const { data, isLoading, isError } = useQuery({
     queryKey: ['/api/patients'],
-    queryFn: () => 
-      fetch('/api/patients')
+    queryFn: () =>
+      fetch(`${process.env.API_URL||'http://localhost:5000'}/api/patients')
         .then(res => res.json())
         .then(data => data.patientIds)
   });
@@ -35,8 +26,8 @@ export default function PatientSelector({ onSelect, selectedPatientId }: Patient
         Select Patient ID
       </Label>
       <Select value={selectedPatientId} onValueChange={handleChange}>
-        <SelectTrigger 
-          id="patient-select" 
+        <SelectTrigger
+          id="patient-select"
           className="w-full border-slate-300 focus:border-primary focus:ring-primary"
         >
           <SelectValue placeholder="Select a patient..." />
