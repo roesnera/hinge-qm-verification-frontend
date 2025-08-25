@@ -51,7 +51,7 @@ export function SideBySideView({
   const { data: clinicalNoteText, isLoading, error } = useQuery<ClinicalNoteText>({
     queryKey: ['/api/notes', selectedNote?.id, 'text'],
     queryFn: () =>
-      fetch(`${process.env.API_URL||'http://localhost:5000'}/api/notes/${selectedNote?.id}/text`)
+      fetch(`http://localhost:5000/api/notes/${selectedNote?.id}/text`)
         .then(res => {
           if (!res.ok) {
             throw new Error('Failed to fetch clinical note text');

@@ -21,9 +21,6 @@ export default function FacilityPatientSelector({ onSelect, selectedPatientId }:
   // Fetch facilities and their patients
   const { data: facilitiesData, isLoading, isError } = useQuery<FacilitiesData>({
     queryKey: ['/api/facilities'],
-    queryFn: () =>
-      fetch(`${process.env.API_URL||'http://localhost:5000'}/api/facilities`)
-        .then(res => res.json())
   });
 
   // Update available patients when facility selection changes

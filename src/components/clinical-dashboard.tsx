@@ -28,7 +28,6 @@ export default function ClinicalDashboard({ selectedFacility: propSelectedFacili
   // Fetch facilities data
   const { data: facilitiesData } = useQuery<FacilitiesData>({
     queryKey: ['/api/facilities'],
-    queryFn: () => fetch(`http://localhost:5000/api/facilities`).then(res => res.json())
   });
 
   // Fetch all notes for the selected facility

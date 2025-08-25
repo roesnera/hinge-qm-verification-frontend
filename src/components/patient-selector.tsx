@@ -1,4 +1,6 @@
+import { Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select";
 import { useQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 
 interface PatientSelectorProps {
   onSelect: (patientId: string) => void;
@@ -10,7 +12,7 @@ export default function PatientSelector({ onSelect, selectedPatientId }: Patient
   const { data, isLoading, isError } = useQuery({
     queryKey: ['/api/patients'],
     queryFn: () =>
-      fetch(`${process.env.API_URL||'http://localhost:5000'}/api/patients')
+      fetch(`http://localhost:5000/api/patients`)
         .then(res => res.json())
         .then(data => data.patientIds)
   });

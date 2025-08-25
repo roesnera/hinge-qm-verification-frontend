@@ -12,7 +12,7 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const res = await fetch(`${process.env.API_URL||'http://localhost:5000'}${url}`, {
+  const res = await fetch(`http://localhost:5000${url}`, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
     body: data ? JSON.stringify(data) : undefined,
@@ -29,7 +29,7 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey[0] as string, {
+    const res = await fetch('http://localhost:5000'+queryKey[0] as string, {
       credentials: "include",
     });
 
@@ -45,10 +45,9 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: getQueryFn({ on401: "throw" }),
-      refetchInterval: false,
       refetchOnWindowFocus: false,
-      staleTime: Infinity,
-      retry: false,
+      staleTime: 60*1000, /* consider queries stale after 1 minute */
+      retry: 5,
     },
     mutations: {
       retry: false,

@@ -54,8 +54,10 @@ export default function PatientTimeline({ notes }: PatientTimelineProps) {
     return null;
   }
 
+  // TODO: some notes have invalid dates, adjust accordingly
   // Get first and last dates for timeline range
   const startDate = timelineEvents.length > 0 ? format(timelineEvents[0].date, 'MMM d, yyyy') : '';
+  console.log('timelineEvents: ',timelineEvents)
   const endDate = timelineEvents.length > 0 ? format(timelineEvents[timelineEvents.length - 1].date, 'MMM d, yyyy') : '';
 
   const getEventColor = (type: string) => {

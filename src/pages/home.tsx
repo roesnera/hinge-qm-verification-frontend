@@ -45,10 +45,11 @@ export default function Home() {
   // Fetch patient notes when a patient is selected
   const { data: notesData, isLoading: isLoadingNotes } = useQuery({
     queryKey: ['/api/patients', selectedPatientId, 'notes'],
-    queryFn: () =>
-      fetch(`${process.env.API_URL||'http://localhost:5000'}/api/patients/${selectedPatientId}/notes`)
-        .then(res => res.json())
-        .then(data => data.notes),
+    queryFn: async () => {
+        return await fetch(`http://localhost:5000/api/patients/${selectedPatientId}/notes`)
+          .then(res => res.json())
+          .then(data => data.notes)
+      },
     enabled: !!selectedPatientId
   });
 
@@ -56,7 +57,7 @@ export default function Home() {
   const { data: qualityMeasuresData, isLoading: _isLoadingQualityMeasures } = useQuery({
     queryKey: ['/api/patients', selectedPatientId, 'quality-measures'],
     queryFn: () =>
-      fetch(`${process.env.API_URL||'http://localhost:5000'}/api/patients/${selectedPatientId}/quality-measures`)
+      fetch(`http://localhost:5000/api/patients/${selectedPatientId}/quality-measures`)
         .then(res => res.json())
         .then(data => data.qualityMeasures),
     enabled: !!selectedPatientId
@@ -66,12 +67,12 @@ export default function Home() {
   const { data: _allNotesData, isLoading: _isLoadingAllNotes } = useQuery({
     queryKey: ['/api/patients/all-notes'],
     queryFn: async () => {
-      const patientsResponse = await fetch(`${process.env.API_URL||'http://localhost:5000'}/api/patients`);
+      const patientsResponse = await fetch(`http://localhost:5000/api/patients`);
       const { patientIds } = await patientsResponse.json();
 
       const allNotes: Note[] = [];
       for (const patientId of patientIds) {
-        const notesResponse = await fetch(`${process.env.API_URL||'http://localhost:5000'}/api/patients/${patientId}/notes`);
+        const notesResponse = await fetch(`http://localhost:5000/api/patients/${patientId}/notes`);
         const { notes } = await notesResponse.json();
         allNotes.push(...notes);
       }

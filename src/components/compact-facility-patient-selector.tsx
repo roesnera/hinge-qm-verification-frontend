@@ -19,9 +19,6 @@ export default function CompactFacilityPatientSelector({ onSelect, selectedPatie
   // Fetch facilities and their patients
   const { data: facilitiesData, isLoading, isError } = useQuery<FacilitiesData>({
     queryKey: ['/api/facilities'],
-    queryFn: () =>
-      fetch(`${process.env.API_URL||'http://localhost:5000'}/api/facilities`)
-        .then(res => res.json())
   });
 
   // Update available patients when facility selection changes
@@ -73,7 +70,7 @@ export default function CompactFacilityPatientSelector({ onSelect, selectedPatie
 
   if (isError || !facilitiesData) {
     return (
-      <div className="text-xs text-red-600">Failed to load facilities</div>
+      <div className="text-xs text-red-600"> WTFFF Failed to load facilities</div>
     );
   }
 
