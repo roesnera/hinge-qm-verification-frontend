@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@src/components/ui/button";
-import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
+import { noteAbstractionSchema, type Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
 import { queryClient } from "@src/lib/queryClient";
 import CompactFacilityPatientSelector from "@src/components/compact-facility-patient-selector";
 import PatientTimeline from "@src/components/patient-timeline";
@@ -43,7 +43,7 @@ export default function Home() {
   const [isQualityMeasuresPanelOpen, setIsQualityMeasuresPanelOpen] = useState<boolean>(false);
 
   // Fetch patient notes when a patient is selected
-  const { data: notesData, isLoading: isLoadingNotes } = useQuery({
+  const { data: rawNotesData, isLoading: isLoadingNotes } = useQuery<{},{},Note[]>({
     queryKey: ['/api/patients', selectedPatientId, 'notes'],
     queryFn: async () => {
         return await fetch(`http://localhost:5000/api/patients/${selectedPatientId}/notes`)
@@ -52,6 +52,10 @@ export default function Home() {
       },
     enabled: !!selectedPatientId
   });
+
+  const notesData = rawNotesData?.filter(entry => {
+    return !!entry.id
+  }) ?? []
 
   // Fetch quality measures for the selected patient
   const { data: qualityMeasuresData, isLoading: _isLoadingQualityMeasures } = useQuery({
@@ -224,7 +228,7 @@ export default function Home() {
 
   // Function to group notes by type
   function groupNotesByType(notes: Note[]) {
-    console.log('All notes:', notes);
+    // console.log('All notes:', notes);
 
     const grouped: Record<string, Note[]> = {};
 
@@ -234,10 +238,10 @@ export default function Home() {
         ? mapNoteTypeToTab(note.noteType)
         : mapNoteTypeToTab(note.description || '');
 
-      console.log('Processing note:', note.id,
-                  'noteType:', note.noteType || 'undefined',
-                  'description:', note.description || 'undefined',
-                  'mappedType:', type);
+      // console.log('Processing note:', note.id,
+      //             'noteType:', note.noteType || 'undefined',
+      //             'description:', note.description || 'undefined',
+      //             'mappedType:', type);
 
       if (!grouped[type]) {
         grouped[type] = [];
@@ -253,7 +257,7 @@ export default function Home() {
       });
     });
 
-    console.log('Grouped notes:', Object.keys(grouped));
+    // console.log('Grouped notes:', Object.keys(grouped));
     return grouped;
   }
 
@@ -262,7 +266,7 @@ export default function Home() {
     if (!noteType) return 'other';
 
     const typeLower = noteType.toLowerCase();
-    console.log('Mapping type:', typeLower);
+    // console.log('Mapping type:', typeLower);
 
     // First check exact matches to avoid false positives
     if (typeLower === 'follow-up' || typeLower === 'followup' || typeLower === 'follow up') return 'followup';
