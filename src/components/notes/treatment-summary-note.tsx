@@ -4,7 +4,7 @@ import EditableField from "@src/components/editable-field";
 import { Button } from "@src/components/ui/button";
 import { Pencil, FileText } from "lucide-react";
 import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
-import { format } from "date-fns";
+import { format } from "@src/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@src/components/ui/select";
 import { Badge } from "@src/components/ui/badge";
 import DynamicFieldEditor from "@src/components/dynamic-field-editor";

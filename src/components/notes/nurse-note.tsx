@@ -1,10 +1,10 @@
 import { useState } from "react";
+import { format } from "@src/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@src/components/ui/card";
 import EditableField from "@src/components/editable-field";
 import { Button } from "@src/components/ui/button";
 import { Pencil, FileText } from "lucide-react";
 import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
-import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@src/components/ui/select";
 import { Badge } from "@src/components/ui/badge";
 

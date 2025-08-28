@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
-import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@src/components/ui/card";
 import { Badge } from "@src/components/ui/badge";
 import { Button } from "@src/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { format } from "@src/lib/utils";
 
 interface PatientTimelineProps {
   notes: Note[];
@@ -54,10 +54,7 @@ export default function PatientTimeline({ notes }: PatientTimelineProps) {
     return null;
   }
 
-  // TODO: some notes have invalid dates, adjust accordingly
-  // Get first and last dates for timeline range
   const startDate = timelineEvents.length > 0 ? format(timelineEvents[0].date, 'MMM d, yyyy') : '';
-  console.log('timelineEvents: ',timelineEvents)
   const endDate = timelineEvents.length > 0 ? format(timelineEvents[timelineEvents.length - 1].date, 'MMM d, yyyy') : '';
 
   const getEventColor = (type: string) => {
