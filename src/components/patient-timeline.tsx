@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
+import type { Note } from "@intelligenthealthsolutions/hinge-analyze/esm";
 import { Card, CardContent, CardHeader, CardTitle } from "@src/components/ui/card";
 import { Badge } from "@src/components/ui/badge";
 import { Button } from "@src/components/ui/button";

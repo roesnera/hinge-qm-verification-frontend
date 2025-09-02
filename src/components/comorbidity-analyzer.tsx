@@ -5,7 +5,7 @@ import { Badge } from "@src/components/ui/badge";
 import { Checkbox } from "@src/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@src/components/ui/select";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Legend } from 'recharts';
-import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
+import type { Note } from "@intelligenthealthsolutions/hinge-analyze/esm";
 import { ComorbidityAnalyzer, CohortFilters } from "@src/lib/analytics";
 import { BarChart3, TrendingUp, Users, AlertTriangle } from "lucide-react";
 

@@ -1,4 +1,4 @@
-import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
+import type { Note } from "@intelligenthealthsolutions/hinge-analyze/esm";
 
 export interface ComorbidityProfile {
   patientId: string;

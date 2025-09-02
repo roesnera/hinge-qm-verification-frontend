@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@src/components/ui/car
 import EditableField from "@src/components/editable-field";
 import { Button } from "@src/components/ui/button";
 import { Pencil, FileText } from "lucide-react";
-import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
+import type { Note } from "@intelligenthealthsolutions/hinge-analyze/esm";
 import { format } from "@src/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@src/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@src/components/ui/select";

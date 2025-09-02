@@ -6,7 +6,7 @@ import { Label } from '@src/components/ui/label';
 import { Checkbox } from '@src/components/ui/checkbox';
 import { Loader2, BarChart3, PieChart, LineChart, Table, Filter } from 'lucide-react';
 import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, PieChart as RechartsPieChart, Cell } from 'recharts';
-import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
+import type { Note } from "@intelligenthealthsolutions/hinge-analyze/esm";
 
 interface FacilitiesData {
   facilities: Record<string, string[]>;

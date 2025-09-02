@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@src/components/ui/card";
 import { Button } from "@src/components/ui/button";
 import { ChevronDown, ChevronUp, Pencil, FileText } from "lucide-react";
-import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
+import type { Note } from "@intelligenthealthsolutions/hinge-analyze/esm";
 import { Badge } from "@src/components/ui/badge";
 import { format } from "@src/lib/utils";
 import { Input } from "@src/components/ui/input";

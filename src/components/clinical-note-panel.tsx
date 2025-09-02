@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Button } from '@src/components/ui/button';
 import { Separator } from '@src/components/ui/separator';
 import { X, FileText, Calendar, User, Building } from 'lucide-react';
-import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
+import type { Note } from "@intelligenthealthsolutions/hinge-analyze/esm";
 
 interface ClinicalNotePanelProps {
   note: Note | null;

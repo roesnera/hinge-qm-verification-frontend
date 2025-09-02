@@ -3,7 +3,7 @@ import { Button } from '@src/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@src/components/ui/tabs';
 import { Badge } from '@src/components/ui/badge';
 import { X, FileText, Calendar, User, Pencil, Save } from 'lucide-react';
-import type { Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
+import type { Note } from "@intelligenthealthsolutions/hinge-analyze/esm";
 import ConsultNote from './notes/consult-note';
 import CTSimulationNote from './notes/ct-simulation-note';
 import DailyTreatmentNote from './notes/daily-treatment-note';

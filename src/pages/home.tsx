@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@src/components/ui/button";
-import { noteAbstractionSchema, type Note } from "@intelligenthealthsolutions/hinge-qm-verification/esm";
+import { noteSchema, type Note } from "@intelligenthealthsolutions/hinge-analyze/esm";
 import { queryClient } from "@src/lib/queryClient";
 import CompactFacilityPatientSelector from "@src/components/compact-facility-patient-selector";
 import PatientTimeline from "@src/components/patient-timeline";
@@ -53,9 +53,10 @@ export default function Home() {
     enabled: !!selectedPatientId
   });
 
-  const notesData = rawNotesData?.filter(entry => {
-    return !!entry.id
-  }) ?? []
+  const notesData = rawNotesData?.map((entry) => {
+    const parsed = noteSchema.safeParse(entry)
+    return parsed.data
+  }).filter(item => !!item) ?? []
 
   // Fetch quality measures for the selected patient
   const { data: qualityMeasuresData, isLoading: _isLoadingQualityMeasures } = useQuery({
@@ -238,11 +239,6 @@ export default function Home() {
         ? mapNoteTypeToTab(note.noteType)
         : mapNoteTypeToTab(note.description || '');
 
-      // console.log('Processing note:', note.id,
-      //             'noteType:', note.noteType || 'undefined',
-      //             'description:', note.description || 'undefined',
-      //             'mappedType:', type);
-
       if (!grouped[type]) {
         grouped[type] = [];
       }
@@ -253,7 +249,8 @@ export default function Home() {
     // Sort notes by creation date (newest first) within each type
     Object.keys(grouped).forEach(type => {
       grouped[type].sort((a, b) => {
-        return new Date(b.creation).getTime() - new Date(a.creation).getTime();
+        return (b.creation && a.creation) ? new Date(b.creation).getTime() - new Date(a.creation).getTime() :
+          a.creation ? -1 : 1
       });
     });
 
